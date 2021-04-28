@@ -3,34 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <title>softwareTestTool</title>
+    <!--引入vue.js-->
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <!-- Favicon -->
+    <link rel="icon" href="./assets/img/favicon.png" type="image/png">
+    <!--Font-awesome-->
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+
+    </style>
 </head>
+
 <body>
-<!--引入vue.js-->
-<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-<!-- 引入样式 -->
-<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-<!-- 引入组件库 -->
-<script src="https://unpkg.com/element-ui/lib/index.js"></script>
-
-
 <div id="app">
 
-    {{ message }}
-    <el-button @click="visible = true">Button</el-button>
-    <el-dialog :visible.sync="visible" title="Hello world">
-        <p>Try Element</p>
-    </el-dialog>
+    <el-container>
+        <el-header>Header</el-header>
+        <el-main>
+            Main
+            <!--试试font-awesome-->
+            <i class="fa fa-close"></i>
+        </el-main>
+    </el-container>
 
 </div>
+
 <script>
     var app = new Vue({
         el: '#app',
         data: {
-            message: 'Hello Vue!',
-            visible:false
+
         },
         methods:{}
     })
 </script>
 </body>
+
 </html>
