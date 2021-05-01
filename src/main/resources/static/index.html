@@ -14,7 +14,10 @@
     <!--Font-awesome-->
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
-
+        body{
+            background-color: rgb(245,252,254); /* 浏览器不支持的时候显示 */
+            background-image: linear-gradient(to right, rgb(245,252,254),rgb(143,189,224));
+        }
     </style>
 </head>
 
@@ -22,12 +25,54 @@
 <div id="app">
 
     <el-container>
-        <el-header>Header</el-header>
-        <el-main>
-            Main
-            <!--试试font-awesome-->
-            <i class="fa fa-close"></i>
+        <el-header style="height: 5vh">
+            <el-row :gutter="20">
+                <el-col :span="8">
+                    <span style="color:rgb(5,67,134);font-size: 20px;line-height: 5vh">Software Test Tool</span>
+                </el-col>
+                <el-col :span="16">
+                    <!--todo：还没想好放什么-->
+                </el-col>
+            </el-row>
+        </el-header>
+        <el-main style="height: 85vh">
+            <el-card class="box-card" style="height: 98%;text-align: center">
+                <!--todo:还没分页-->
+                <el-row>
+                    <el-col :span="10">
+                        <!--todo：图片样式待改-->
+                        <el-image
+                                :src="helloUrl"
+                                :fit="fit"
+                        >
+                        </el-image>
+                    </el-col>
+                    <el-col :span="14">
+                        <h2>
+                            Welcome to
+                        </h2>
+                        <h1 style="color:rgb(5,67,134);font-size: 40px">Software Test Tool</h1>
+                        <p style="color: rgb(178,197,216)">
+                            Fill basic information,
+                            <br/>
+                            Choose Java Classes and test cases,
+                            <br/>
+                            then get results.
+                        </p>
+                        <el-button type="primary" round style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">Get started<i class="el-icon-right el-icon--right"></i></el-button>
+                    </el-col>
+                </el-row>
+            </el-card>
         </el-main>
+        <el-footer style="height: 5vh">
+            <el-steps :active="1" simple>
+                <el-step title="welcome" icon="el-icon-s-home"></el-step>
+                <el-step title="step1" icon="el-icon-edit-outline"></el-step>
+                <el-step title="step2" icon="el-icon-upload"></el-step>
+                <el-step title="step3" icon="el-icon-data-analysis"></el-step>
+                <el-step title="step4" icon="el-icon-s-data"></el-step>
+            </el-steps>
+        </el-footer>
     </el-container>
 
 </div>
@@ -36,9 +81,10 @@
     var app = new Vue({
         el: '#app',
         data: {
-
+            helloUrl:"./assets/img/svg/Hello.svg"
         },
-        methods:{}
+        methods:{
+        }
     })
 </script>
 </body>
