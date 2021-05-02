@@ -18,6 +18,9 @@
             background-color: rgb(245,252,254); /* 浏览器不支持的时候显示 */
             background-image: linear-gradient(to right, rgb(245,252,254),rgb(143,189,224));
         }
+        .el-step__title.is-finish{
+            color:rgb(84,193,219);
+        }
     </style>
 </head>
 
@@ -36,8 +39,8 @@
             </el-row>
         </el-header>
         <el-main style="height: 85vh">
-            <el-card class="box-card" style="height: 98%;text-align: center">
-                <!--todo:还没分页-->
+            <!--欢迎页面-->
+            <el-card class="box-card" style="height: 98%;text-align: center" v-show="mainIsShow">
                 <el-row>
                     <el-col :span="10">
                         <!--todo：图片样式待改-->
@@ -59,13 +62,29 @@
                             <br/>
                             then get results.
                         </p>
-                        <el-button type="primary" round style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">Get started<i class="el-icon-right el-icon--right"></i></el-button>
+                        <el-button type="primary" round @click="mainTo1()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">Get started<i class="el-icon-right el-icon--right"></i></el-button>
                     </el-col>
                 </el-row>
             </el-card>
+            <!--步骤1-->
+            <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow1">
+                step1
+            </el-card>
+            <!--步骤2-->
+            <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow2">
+                step2
+            </el-card>
+            <!--步骤3-->
+            <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow3">
+                step3
+            </el-card>
+            <!--步骤4-->
+            <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow4">
+                step4
+            </el-card>
         </el-main>
         <el-footer style="height: 5vh">
-            <el-steps :active="1" simple>
+            <el-steps :active="stepActive" simple>
                 <el-step title="welcome" icon="el-icon-s-home"></el-step>
                 <el-step title="step1" icon="el-icon-edit-outline"></el-step>
                 <el-step title="step2" icon="el-icon-upload"></el-step>
@@ -81,9 +100,24 @@
     var app = new Vue({
         el: '#app',
         data: {
-            helloUrl:"./assets/img/svg/Hello.svg"
+            helloUrl:"./assets/img/svg/Hello.svg",
+            //步骤条切换
+            stepActive:0,
+            //控制子页面显隐
+            mainIsShow:true,
+            isShow1:false,
+            isShow2:false,
+            isShow3:false,
+            isShow4:false,
         },
         methods:{
+            mainTo1(){
+                //显隐切换
+                this.mainIsShow = false;
+                this.isShow1 = true;
+                //步骤条切换
+                this.stepActive = 1;
+            }
         }
     })
 </script>
