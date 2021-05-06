@@ -9,4 +9,4 @@ spring:
       max-request-size: 500MB
   
 server:
-  port: 9000
+  port: 80

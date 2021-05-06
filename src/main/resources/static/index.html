@@ -69,18 +69,111 @@
             <!--步骤1-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow1">
                 step1
+                <el-row type="flex" justify="center">
+                  <el-col :span="24" style="padding: 20vh; height: 50vh;">
+                    <p style="color: rgb(178,197,216)">
+                        Select a Java Classes file and upload.
+                    </p>
+                    <el-upload
+                        ref="upload"
+                        action="api/uploadClass"
+                        :on-remove="handleRemove"
+                        :file-list="fileList"
+                        :auto-upload="false"
+                        :on-success="onUploadSuccess"
+                        :limit="1">
+                        <!-- <el-button slot="trigger" size="small" type="primary">Select File</el-button> -->
+                        <el-button slot="trigger" type="primary" round 
+                            style="background-color: rgb(84,193,219);border-color: rgb(84,193,219);width: 140px;">
+                            Select File
+                        </el-button>
+                        <el-button round  type="primary" 
+                            style="background-color: white; color: rgb(84,193,219);border-color: rgb(84,193,219);width: 140px;"
+                            @click="submitUpload">Upload Class
+                        </el-button>
+                    </el-upload>
+                  </el-col>
+                </el-row>
+                <el-row type="flex" justify="center" style="margin-top: 5vh;">
+                    <el-col :span="24">
+                        <el-button type="primary" round @click="mainToWelcome()" 
+                            style="background-color: rgb(84,193,219);border-color: rgb(84,193,219); width: 100px;">
+                            <i class="el-icon-back el-icon--back"></i>
+                            Back
+                        </el-button>
+                        <el-button type="primary" round @click="mainTo2()" 
+                            style="background-color: white; color: rgb(84,193,219);border-color: rgb(84,193,219);width: 100px;">
+                            Next
+                        <i class="el-icon-right el-icon--right"></i>
+                    </el-button>
+                    </el-col>
+                </el-row>
             </el-card>
             <!--步骤2-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow2">
                 step2
+                <el-row type="flex" justify="center">
+                    <el-col :span="24" style="padding: 20vh; height: 50vh;">
+                    </el-col>
+                  </el-row>
+                  <el-row type="flex" justify="center" style="margin-top: 5vh;">
+                      <el-col :span="24">
+                          <el-button type="primary" round @click="mainTo1()" 
+                              style="background-color: rgb(84,193,219);border-color: rgb(84,193,219); width: 100px;">
+                              <i class="el-icon-back el-icon--back"></i>
+                              Back
+                          </el-button>
+                          <el-button type="primary" round @click="mainTo3()" 
+                              style="background-color: white; color: rgb(84,193,219);border-color: rgb(84,193,219);width: 100px;">
+                              Next
+                          <i class="el-icon-right el-icon--right"></i>
+                      </el-button>
+                      </el-col>
+                  </el-row>
             </el-card>
             <!--步骤3-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow3">
                 step3
+                <el-row type="flex" justify="center">
+                    <el-col :span="24" style="padding: 20vh; height: 50vh;">
+                    </el-col>
+                  </el-row>
+                  <el-row type="flex" justify="center" style="margin-top: 5vh;">
+                      <el-col :span="24">
+                          <el-button type="primary" round @click="mainTo2()" 
+                              style="background-color: rgb(84,193,219);border-color: rgb(84,193,219); width: 100px;">
+                              <i class="el-icon-back el-icon--back"></i>
+                              Back
+                          </el-button>
+                          <el-button type="primary" round @click="mainTo4()" 
+                              style="background-color: white; color: rgb(84,193,219);border-color: rgb(84,193,219);width: 100px;">
+                              Next
+                          <i class="el-icon-right el-icon--right"></i>
+                      </el-button>
+                      </el-col>
+                  </el-row>
             </el-card>
             <!--步骤4-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow4">
                 step4
+                <el-row type="flex" justify="center">
+                    <el-col :span="24" style="padding: 20vh; height: 50vh;">
+                    </el-col>
+                  </el-row>
+                  <el-row type="flex" justify="center" style="margin-top: 5vh;">
+                      <el-col :span="24">
+                          <el-button type="primary" round @click="mainTo3()" 
+                              style="background-color: rgb(84,193,219);border-color: rgb(84,193,219); width: 100px;">
+                              <i class="el-icon-back el-icon--back"></i>
+                              Back
+                          </el-button>
+                          <el-button type="primary" round @click="mainTo4()" 
+                              style="background-color: white; color: rgb(84,193,219);border-color: rgb(84,193,219);width: 100px;">
+                              Next
+                          <i class="el-icon-right el-icon--right"></i>
+                      </el-button>
+                      </el-col>
+                  </el-row>
             </el-card>
         </el-main>
         <el-footer style="height: 5vh">
@@ -109,14 +202,76 @@
             isShow2:false,
             isShow3:false,
             isShow4:false,
+            fileList: []
         },
         methods:{
+            mainToWelcome(){
+                //显隐切换
+                this.mainIsShow = true;
+                this.isShow1 = false;
+                this.isShow2 = false;
+                this.isShow3 = false;
+                this.isShow4 = false;
+                //步骤条切换
+                this.stepActive = 0;
+            },
             mainTo1(){
                 //显隐切换
                 this.mainIsShow = false;
                 this.isShow1 = true;
+                this.isShow2 = false;
+                this.isShow3 = false;
+                this.isShow4 = false;
                 //步骤条切换
                 this.stepActive = 1;
+            },
+            mainTo2(){
+                //显隐切换
+                this.mainIsShow = false;
+                this.isShow1 = false;
+                this.isShow2 = true;
+                this.isShow3 = false;
+                this.isShow4 = false;
+                //步骤条切换
+                this.stepActive = 2;
+            },
+            mainTo3(){
+                //显隐切换
+                this.mainIsShow = false;
+                this.isShow1 = false;
+                this.isShow2 = false;
+                this.isShow3 = true;
+                this.isShow4 = false;
+                //步骤条切换
+                this.stepActive = 3;
+            },
+            mainTo4(){
+                //显隐切换
+                this.mainIsShow = false;
+                this.isShow1 = false;
+                this.isShow2 = false;
+                this.isShow3 = false;
+                this.isShow4 = true;
+                //步骤条切换
+                this.stepActive = 4;
+            },
+            submitUpload() {
+                //上传文件
+                this.$refs.upload.submit();
+            },
+            handleRemove(file, fileList) {
+                //移除文件
+                console.log(file, fileList);
+            },
+            onUploadSuccess(response, file, fileList){
+                //上传成功
+                console.log(response);
+                if(response=="success"){
+                    this.$message({
+                        message: 'Upload class successfully!',
+                        type: 'success'
+                    });
+                }
             }
         }
     })
