@@ -13,6 +13,8 @@
     <link rel="icon" href="./assets/img/favicon.png" type="image/png">
     <!--Font-awesome-->
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- 引入Axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <style>
         body{
             background-color: rgb(245,252,254); /* 浏览器不支持的时候显示 */
@@ -20,6 +22,27 @@
         }
         .el-step__title.is-finish{
             color:rgb(84,193,219);
+        }
+        .button1{
+            transition: .5s;
+            background-color: rgb(84,193,219);
+            border-color: rgb(84,193,219);
+        }
+        .button1:hover{
+            background-color: white;
+            color: rgb(84,193,219);
+            border-color: rgb(84,193,219);
+        }
+        .button2{
+            transition: .5s;
+            background-color: white;
+            color: rgb(84,193,219);
+            border-color: rgb(84,193,219);
+        }
+        .button2:hover{
+            background-color: rgb(84,193,219);
+            border-color: rgb(84,193,219);
+            color: white;
         }
     </style>
 </head>
@@ -62,7 +85,7 @@
                             <br/>
                             then get results.
                         </p>
-                        <el-button type="primary" round @click="mainTo1()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">Get started<i class="el-icon-right el-icon--right"></i></el-button>
+                        <el-button class="button1" type="primary" round @click="mainTo1()">Get started<i class="el-icon-right el-icon--right"></i></el-button>
                     </el-col>
                 </el-row>
             </el-card>
@@ -74,6 +97,7 @@
                     <p style="color: rgb(178,197,216)">
                         Select a Java Classes file and upload.
                     </p>
+                    <!-- 上传文件 -->
                     <el-upload
                         ref="upload"
                         action="api/uploadClass"
@@ -82,27 +106,27 @@
                         :auto-upload="false"
                         :on-success="onUploadSuccess"
                         :limit="1">
-                        <!-- <el-button slot="trigger" size="small" type="primary">Select File</el-button> -->
-                        <el-button slot="trigger" type="primary" round 
-                            style="background-color: rgb(84,193,219);border-color: rgb(84,193,219);width: 140px;">
+                        <el-button class="button1" slot="trigger" type="primary" 
+                            style="width: 130px;" round>
                             Select File
                         </el-button>
-                        <el-button round  type="primary" 
-                            style="background-color: white; color: rgb(84,193,219);border-color: rgb(84,193,219);width: 140px;"
-                            @click="submitUpload">Upload Class
+                        <el-button class="button2" round  type="primary"
+                            style="width: 130px;" @click="submitUpload">
+                            Upload Class
                         </el-button>
                     </el-upload>
                   </el-col>
                 </el-row>
+                <!-- 换页按钮 -->
                 <el-row type="flex" justify="center" style="margin-top: 5vh;">
                     <el-col :span="24">
-                        <el-button type="primary" round @click="mainToWelcome()" 
-                            style="background-color: rgb(84,193,219);border-color: rgb(84,193,219); width: 100px;">
+                        <el-button class="button1" type="primary" round @click="mainToWelcome()" 
+                            style="width: 100px;">
                             <i class="el-icon-back el-icon--back"></i>
                             Back
                         </el-button>
-                        <el-button type="primary" round @click="mainTo2()" 
-                            style="background-color: white; color: rgb(84,193,219);border-color: rgb(84,193,219);width: 100px;">
+                        <el-button class="button2" type="primary" round @click="mainTo2()" 
+                            style="width: 100px;">
                             Next
                         <i class="el-icon-right el-icon--right"></i>
                     </el-button>
@@ -113,21 +137,49 @@
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow2">
                 step2
                 <el-row type="flex" justify="center">
-                    <el-col :span="24" style="padding: 20vh; height: 50vh;">
+                    <el-col :span="24" style="height: 50vh;">
+                        <p style="color: rgb(178,197,216)">
+                            Click to select a Java Classes.
+                        </p>
+                        <!-- Java类表格 -->
+                        <el-table
+                            style="width: 300px; margin: auto;"
+                            ref="singleTable"
+                            :data="JavaClasses"
+                            highlight-current-row
+                            @current-change="handleSelectedClassChange">
+                            <el-table-column
+                                property="class_name"
+                                label="Class Name"
+                                align="center"
+                                width="150px">
+                            </el-table-column>
+                            <el-table-column
+                                label="Operation"
+                                align="center"
+                                width="150px">
+                                <template slot-scope="scope">
+                                    <el-button class="button2"
+                                      size="mini" round
+                                      @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
+                                </template>
+                        </el-table-column>
+                      </el-table>
                     </el-col>
                   </el-row>
+                  <!-- 换页按钮 -->
                   <el-row type="flex" justify="center" style="margin-top: 5vh;">
                       <el-col :span="24">
-                          <el-button type="primary" round @click="mainTo1()" 
-                              style="background-color: rgb(84,193,219);border-color: rgb(84,193,219); width: 100px;">
-                              <i class="el-icon-back el-icon--back"></i>
-                              Back
-                          </el-button>
-                          <el-button type="primary" round @click="mainTo3()" 
-                              style="background-color: white; color: rgb(84,193,219);border-color: rgb(84,193,219);width: 100px;">
-                              Next
-                          <i class="el-icon-right el-icon--right"></i>
-                      </el-button>
+                            <el-button class="button1" type="primary" round @click="mainTo1()" 
+                                style="width: 100px;">
+                                <i class="el-icon-back el-icon--back"></i>
+                                Back
+                            </el-button>
+                            <el-button class="button2" type="primary" round @click="mainTo3()" 
+                                style="width: 100px;">
+                                Next
+                            <i class="el-icon-right el-icon--right"></i>
+                        </el-button>
                       </el-col>
                   </el-row>
             </el-card>
@@ -136,20 +188,24 @@
                 step3
                 <el-row type="flex" justify="center">
                     <el-col :span="24" style="padding: 20vh; height: 50vh;">
+                        <p style="color: rgb(178,197,216)">
+                            Selected Class：{{selectedClassName}}
+                        </p>
                     </el-col>
                   </el-row>
+                  <!-- 换页按钮 -->
                   <el-row type="flex" justify="center" style="margin-top: 5vh;">
                       <el-col :span="24">
-                          <el-button type="primary" round @click="mainTo2()" 
-                              style="background-color: rgb(84,193,219);border-color: rgb(84,193,219); width: 100px;">
-                              <i class="el-icon-back el-icon--back"></i>
-                              Back
-                          </el-button>
-                          <el-button type="primary" round @click="mainTo4()" 
-                              style="background-color: white; color: rgb(84,193,219);border-color: rgb(84,193,219);width: 100px;">
-                              Next
-                          <i class="el-icon-right el-icon--right"></i>
-                      </el-button>
+                            <el-button class="button1" type="primary" round @click="mainTo2()" 
+                                style="width: 100px;">
+                                <i class="el-icon-back el-icon--back"></i>
+                                Back
+                            </el-button>
+                            <el-button class="button2" type="primary" round @click="mainTo4()" 
+                                style="width: 100px;">
+                                Next
+                            <i class="el-icon-right el-icon--right"></i>
+                        </el-button>
                       </el-col>
                   </el-row>
             </el-card>
@@ -160,23 +216,25 @@
                     <el-col :span="24" style="padding: 20vh; height: 50vh;">
                     </el-col>
                   </el-row>
+                  <!-- 换页按钮 -->
                   <el-row type="flex" justify="center" style="margin-top: 5vh;">
                       <el-col :span="24">
-                          <el-button type="primary" round @click="mainTo3()" 
-                              style="background-color: rgb(84,193,219);border-color: rgb(84,193,219); width: 100px;">
-                              <i class="el-icon-back el-icon--back"></i>
-                              Back
-                          </el-button>
-                          <el-button type="primary" round @click="mainTo4()" 
-                              style="background-color: white; color: rgb(84,193,219);border-color: rgb(84,193,219);width: 100px;">
-                              Next
-                          <i class="el-icon-right el-icon--right"></i>
-                      </el-button>
+                            <el-button class="button1" type="primary" round @click="mainTo3()" 
+                                style="width: 100px;">
+                                <i class="el-icon-back el-icon--back"></i>
+                                Back
+                            </el-button>
+                            <el-button class="button2" type="primary" round @click="mainTo4()" 
+                                style="width: 100px;">
+                                Next
+                            <i class="el-icon-right el-icon--right"></i>
+                        </el-button>
                       </el-col>
                   </el-row>
             </el-card>
         </el-main>
         <el-footer style="height: 5vh">
+            <!-- 步骤条 -->
             <el-steps :active="stepActive" simple>
                 <el-step title="welcome" icon="el-icon-s-home"></el-step>
                 <el-step title="step1" icon="el-icon-edit-outline"></el-step>
@@ -202,7 +260,11 @@
             isShow2:false,
             isShow3:false,
             isShow4:false,
-            fileList: []
+            fileList: [],
+            // Java类
+            JavaClasses : [],
+            selectedClass : null,
+            selectedClassName :"" 
         },
         methods:{
             mainToWelcome(){
@@ -271,8 +333,56 @@
                         message: 'Upload class successfully!',
                         type: 'success'
                     });
+                    this.getClasses();
                 }
+            },
+            getClasses(){
+                // 获取后端的Java类
+                axios.get('api/getClasses')
+                    .then(response => {
+                        this.JavaClasses = response.data;
+                    });
+            },
+            //选择Java类
+            handleSelectedClassChange(val) {
+                this.selectedClass = val;
+                this.selectedClassName = val.class_name;
+            },
+            // 删除Java类
+            handleDelete(index,row){
+                console.log(row);
+                this.$confirm('Delete this Java Class?', 'Inform', {
+                        confirmButtonText: 'Confirm',
+                        cancelButtonText: 'Cancel',
+                        type: 'warning'
+                    }).then(() => {
+                        axios.get('api/removeClass',
+                        {
+                            params:{
+                                class_name:row.class_name
+                            }
+                        })
+                        .then(response => {
+                            console.log(response.data);
+                            if(response.data=="success"){
+                                this.$message({
+                                    type: 'success',
+                                    message: 'Delete Succseefully!'
+                                });
+                                this.getClasses();
+                            }
+                        });
+
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: 'Cancel Delete!'
+                        });          
+                });
             }
+        },
+        created(){
+            this.getClasses();
         }
     })
 </script>
