@@ -41,34 +41,34 @@
         <el-main style="height: 85vh">
             <!--欢迎页面-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="mainIsShow">
-                <el-row>
+                <el-row style="margin-top: 3vh;margin-left: 15vw;margin-right: 15vw">
                     <el-col :span="10">
-                        <!--todo：图片样式待改-->
                         <el-image
-                                :src="helloUrl"
-                                :fit="fit"
-                        >
-                        </el-image>
+                                style="margin-top:7vh;width: 400px; height: 400px"
+                                :src="mainPic"
+                                :fit="fill"
+                        ></el-image>
                     </el-col>
                     <el-col :span="14">
-                        <h2>
+                        <h2 style="margin-top:10vh;font-size:25px">
                             Welcome to
                         </h2>
-                        <h1 style="color:rgb(5,67,134);font-size: 40px">Software Test Tool</h1>
-                        <p style="color: rgb(178,197,216)">
+                        <h1 style="color:rgb(5,67,134);font-size: 42px">Software Test Tool</h1>
+                        <p style="color: rgb(178,197,216);font-size: 18px">
                             Fill basic information,
                             <br/>
-                            Choose Java Classes and test cases,
+                            Choose Java classes and test cases,
                             <br/>
                             then get results.
                         </p>
-                        <el-button type="primary" round @click="mainTo1()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">Get started<i class="el-icon-right el-icon--right"></i></el-button>
+                        <el-button type="primary" round @click="mainTo1()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219);margin-top: 5vh">Get started<i class="el-icon-right el-icon--right"></i></el-button>
                     </el-col>
                 </el-row>
             </el-card>
-            <!--步骤1-->
+            <!--步骤1:记得从这里开始添加返回上一步的按钮-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow1">
                 step1
+
             </el-card>
             <!--步骤2-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow2">
@@ -100,7 +100,7 @@
     var app = new Vue({
         el: '#app',
         data: {
-            helloUrl:"./assets/img/svg/Hello.svg",
+            mainPic:"./assets/img/svg/Hello.svg",
             //步骤条切换
             stepActive:0,
             //控制子页面显隐
