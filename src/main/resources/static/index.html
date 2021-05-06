@@ -22,17 +22,6 @@
             color:rgb(84,193,219);
         }
     </style>
-    <!--状态表格-->
-    <style>
-        .el-table .warning-row {
-            background: oldlace;
-        }
-        .el-table .success-row {
-            background: #f0f9eb;
-        }
-    </style>
-
-
 </head>
 
 <body>
@@ -52,77 +41,46 @@
         <el-main style="height: 85vh">
             <!--欢迎页面-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="mainIsShow">
-                <el-row>
+                <el-row style="margin-top: 3vh;margin-left: 15vw;margin-right: 15vw">
                     <el-col :span="10">
-                        <!--todo：图片样式待改-->
                         <el-image
-                                :src="helloUrl"
-                                :fit="fit"
-                        >
-                        </el-image>
+                                style="margin-top:7vh;width: 400px; height: 400px"
+                                :src="mainPic"
+                                :fit="fill"
+                        ></el-image>
                     </el-col>
                     <el-col :span="14">
-                        <h2>
+                        <h2 style="margin-top:10vh;font-size:25px">
                             Welcome to
                         </h2>
-                        <h1 style="color:rgb(5,67,134);font-size: 40px">Software Test Tool</h1>
-                        <p style="color: rgb(178,197,216)">
+                        <h1 style="color:rgb(5,67,134);font-size: 42px">Software Test Tool</h1>
+                        <p style="color: rgb(178,197,216);font-size: 18px">
                             Fill basic information,
                             <br/>
-                            Choose Java Classes and test cases,
+                            Choose Java classes and test cases,
                             <br/>
                             then get results.
                         </p>
-                        <el-button type="primary" round @click="mainTo1()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">Get started<i class="el-icon-right el-icon--right"></i></el-button>
+                        <el-button type="primary" round @click="mainTo1()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219);margin-top: 5vh">Get started<i class="el-icon-right el-icon--right"></i></el-button>
                     </el-col>
                 </el-row>
             </el-card>
-            <!--步骤1-->
+            <!--步骤1:记得从这里开始添加返回上一步的按钮-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow1">
                 step1
-                <el-button type="primary" round @click="mainTo2()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">选择待测类<i class="el-icon-right el-icon--right"></i></el-button>
+
             </el-card>
             <!--步骤2-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow2">
                 step2
-                <el-button type="primary" round @click="mainTo3()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">选择待测方法<i class="el-icon-right el-icon--right"></i></el-button>
             </el-card>
-            <!--步骤3选择待测方法-->
+            <!--步骤3-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow3">
                 step3
-                <div id="testCase">
-                    <el-upload
-                            class="upload-demo"
-                            drag
-                            action="api/uploadTestCase"
-                            multiple>
-                        <i class="el-icon-upload"></i>
-                        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                        <div class="el-upload__tip" slot="tip">只能上传csv文件</div>
-                    </el-upload>
-                </div>
-
-                <el-button type="primary" round @click="mainTo4()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">查看测试结果<i class="el-icon-right el-icon--right"></i></el-button>
             </el-card>
-            <!--步骤4展示表格、扇形图-->
+            <!--步骤4-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow4">
                 step4
-                <div id="table">
-                    <template>
-                        <el-table
-                                :data="tableData"
-                                style="width: 100%"
-                                :row-class-name="tableRowClassName">
-                            <el-table-column
-                                    v-for="(item, index) in tableLabel"
-                                    :key="index"
-                                    :prop="item.prop"
-                                    :width="item.width"
-                                    :label="item.label">
-                            </el-table-column>
-                        </el-table>
-                    </template>
-                </div>
             </el-card>
         </el-main>
         <el-footer style="height: 5vh">
@@ -142,7 +100,7 @@
     var app = new Vue({
         el: '#app',
         data: {
-            helloUrl:"./assets/img/svg/Hello.svg",
+            mainPic:"./assets/img/svg/Hello.svg",
             //步骤条切换
             stepActive:0,
             //控制子页面显隐
@@ -159,92 +117,9 @@
                 this.isShow1 = true;
                 //步骤条切换
                 this.stepActive = 1;
-            },
-            mainTo2(){
-                //显隐切换
-                this.isShow1 = false;
-                this.isShow2 = true;
-                //步骤条切换
-                this.stepActive = 2;
-            },
-            mainTo3(){
-                //显隐切换
-                this.isShow2 = false;
-                this.isShow3 = true;
-                //步骤条切换
-                this.stepActive = 3;
-            },
-            mainTo4(){
-                //显隐切换
-                this.isShow3 = false;
-                this.isShow4 = true;
-                //步骤条切换
-                this.stepActive = 4;
             }
         }
     })
-
-    new Vue().$mount('#testCase')
-
-    var table = new Vue({
-        el: '#table',
-        data: {
-            tableData: [],
-            tableLabel: [ // 表头数据
-                {label: 'class_name', width: '60', prop: 'class_name'},
-                {label: 'method_name', width: '', prop: 'method_name'},
-                {label: 'parameters', width: '', prop: 'parameters'},
-                {label: 'right_result', width: '', prop: 'right_result'},
-                {label: 'real_result', width: '', prop: 'real_result'},
-                {label: 'result', width: '', prop: 'result'}
-            ]
-        },
-        created: function () {
-            /*
-            $.ajax({
-                url: '/api/test',
-                type: 'get',
-                data: {},
-                dataType: 'json'
-            }).then(function (res) {
-                console.log(res);
-                //把从json获取的数据赋值给数组
-                this.sites = res;
-            }).fail(function () {
-                console.log('失败');
-            })*/
-            var res = [
-                {
-                    "parameters": [ 0.0, 50.0, 50.0],
-                    "right_result": "变量超出取值范围",
-                    "real_result": "变量超出取值范围",
-                    "result": true,
-                    "class_name": "TriangleJudger",
-                    "method_name": "getTriangleType"
-                },
-                {
-                    "parameters": [2.2, 50.0, 50.0],
-                    "right_result": "等腰三角形",
-                    "real_result": "等腰三角形",
-                    "result": true,
-                    "class_name": "TriangleJudger",
-                    "method_name": "getTriangleType"
-                },
-                {
-                    "parameters": [-0.1, 50.0, 50.0],
-                    "right_result": "变量超出取值范围",
-                    "real_result": "变量超出取值范围",
-                    "result": true,
-                    "class_name": "TriangleJudger",
-                    "method_name": "getTriangleType"
-                }
-            ]
-            this.tableData = res;
-        }
-    })
-
-
-
 </script>
 </body>
 
