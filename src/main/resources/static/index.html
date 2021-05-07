@@ -103,7 +103,6 @@
             <!--步骤1-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow1">
                 step1
-                <el-button type="primary" round @click="mainTo2()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">选择待测类<i class="el-icon-right el-icon--right"></i></el-button>
                 <el-row type="flex" justify="center">
                   <el-col :span="24" style="padding: 20vh; height: 50vh;">
                     <p style="color: rgb(178,197,216)">
@@ -148,9 +147,9 @@
             <!--步骤2-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow2">
                 step2
-                <el-button type="primary" round @click="mainTo3()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">选择待测方法<i class="el-icon-right el-icon--right"></i></el-button>
                 <el-row type="flex" justify="center">
                     <el-col :span="24" style="height: 50vh;">
+                        <el-button type="primary" round @click="mainTo3()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">选择待测方法<i class="el-icon-right el-icon--right"></i></el-button>
                         <p style="color: rgb(178,197,216)">
                             Click to select a Java Classes.
                         </p>
@@ -199,27 +198,27 @@
             <!--步骤3选择待测方法-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow3">
                 step3
-                <div id="testCase">
-                    <el-upload
-                            class="upload-demo"
-                            drag="true"
-                            action="api/uploadTestCase"
-                            multiple="fasle"
-                            show-file-list="true"
-                            accept="csv"
-                            :on-preview="handlePreviewFile"
-                            :on-remove="handleRemoveFile">
-                        <i class="el-icon-upload"></i>
-                        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                        <div class="el-upload__tip" slot="tip">只能上传csv文件</div>
-                    </el-upload>
-                </div>
-                <el-button type="primary" round @click="mainTo4()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">查看测试结果<i class="el-icon-right el-icon--right"></i></el-button>
                 <el-row type="flex" justify="center">
-                    <el-col :span="24" style="padding: 20vh; height: 50vh;">
+                    <el-col :span="24" style=" height: 50vh;">
+                        <el-button type="primary" round @click="mainTo4()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">查看测试结果<i class="el-icon-right el-icon--right"></i></el-button>
                         <p style="color: rgb(178,197,216)">
                             Selected Class：{{selectedClassName}}
                         </p>
+                        <div id="testCase">
+                            <el-upload
+                                    class="upload-demo"
+                                    drag="true"
+                                    action="api/uploadTestCase"
+                                    multiple="fasle"
+                                    show-file-list="true"
+                                    accept="csv"
+                                    :on-preview="handlePreviewFile"
+                                    :on-remove="handleRemoveFile">
+                                <i class="el-icon-upload"></i>
+                                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                                <div class="el-upload__tip" slot="tip">只能上传csv文件</div>
+                            </el-upload>
+                        </div>
                     </el-col>
                   </el-row>
                   <!-- 换页按钮 -->
@@ -315,7 +314,7 @@
                 {label: 'right_result', width: '', prop: 'right_result'},
                 {label: 'real_result', width: '', prop: 'real_result'},
                 {label: 'result', width: '', prop: 'result'}
-            ]
+            ],
             fileList: [],
             // Java类
             JavaClasses : [],
