@@ -5,6 +5,8 @@
     <title>softwareTestTool</title>
     <!--引入vue.js-->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 引入 echarts.js -->
+    <script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
     <!-- 引入样式 -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <!-- 引入组件库 -->
@@ -87,16 +89,16 @@
                 step2
                 <el-button type="primary" round @click="mainTo3()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">选择待测方法<i class="el-icon-right el-icon--right"></i></el-button>
             </el-card>
-            <!--步骤3选择待测方法-->
+            <!--步骤3选择测试用例-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow3">
-                step3
-                <div id="testCase">
+                上传测试用例
+                <div>
                     <el-upload
                             class="upload-demo"
-                            drag="true"
+                            drag=true
                             action="api/uploadTestCase"
-                            multiple="fasle"
-                            show-file-list="true"
+                            multiple=fasle
+                            show-file-list=true
                             accept="csv"
                             :on-preview="handlePreviewFile"
                             :on-remove="handleRemoveFile">
@@ -110,23 +112,41 @@
             </el-card>
             <!--步骤4展示表格、扇形图-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow4">
-                step4
-                <div id="table">
-                    <template>
-                        <el-table
-                                :data="tableData"
-                                style="width: 100%"
-                                :row-class-name="tableRowClassName">
-                            <el-table-column
-                                    v-for="(item, index) in tableLabel"
-                                    :key="index"
-                                    :prop="item.prop"
-                                    :width="item.width"
-                                    :label="item.label">
-                            </el-table-column>
-                        </el-table>
-                    </template>
-                </div>
+                展示测试结果
+                <el-row>
+                    <el-col :span="7">
+                        <!--todo：图片样式待改-->
+                        <el-image
+                                :src="helloUrl"
+                                :fit="fit"
+                        >
+                        </el-image>
+                        <div>
+                            <div id="chartPie" style="width: 200px;height: 300px;"></div>
+                        </div>
+                    </el-col>
+                    <el-col :span="17">
+                        <div>
+                            <template>
+                                <el-table
+                                        :data="tableData"
+                                        style="width: 100%"
+                                        max-height="400"
+                                        :row-class-name="tableRowClassName">
+                                    <el-table-column
+                                            v-for="(item, index) in tableLabel"
+                                            :key="index"
+                                            :prop="item.prop"
+                                            :width="item.width"
+                                            :label="item.label">
+                                    </el-table-column>
+                                </el-table>
+                            </template>
+                        </div>
+                        <el-button type="primary" round @click="restart()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)"><i class="el-icon-back el-icon--back"></i>回到首页</el-button>
+                    </el-col>
+                </el-row>
+
             </el-card>
         </el-main>
         <el-footer style="height: 5vh">
@@ -165,8 +185,13 @@
                 {label: 'right_result', width: '', prop: 'right_result'},
                 {label: 'real_result', width: '', prop: 'real_result'},
                 {label: 'result', width: '', prop: 'result'}
-            ]
+            ],
+            tableLength: 0,
+            successCaseCount: 0,
+            unSuccessCaseCount: 0,
+
         },
+
         methods:{
             mainTo1(){
                 //显隐切换
@@ -196,81 +221,17 @@
                 //步骤条切换
                 this.stepActive = 4;
                 this.getTableResult();
+                this.drawPieChart();
                 //上传失败的情况
             },
-
-            /*table高亮*/
-            tableRowClassName({row, rowIndex}) {
-                //待改
-
-
-                if (rowIndex === 1) {
-                    return 'warning-row';
-                } else if (rowIndex === 3) {
-                    return 'success-row';
-                }
-                return '';
+            restart(){
+                //显隐切换
+                this.isShow4 = false;
+                this.isShow1 = true;
+                //步骤条切换
+                this.stepActive = 1;
             },
-            /*获取table结果数据*/
-            getTableResult(){
-                    /*
-                $.ajax({
-                    url: '/api/test',
-                    type: 'get',
-                    data: {},
-                    dataType: 'json'
-                }).then(function (res) {
-                    console.log(res);
-                    //把从json获取的数据赋值给数组
-                    this.sites = res;
-                }).fail(function () {
-                    console.log('失败');
-                })*/
-                var res = [
-                    {
-                        "parameters": [ 0.0, 50.0, 50.0],
-                        "right_result": "变量超出取值范围",
-                        "real_result": "变量超出取值范围",
-                        "result": true,
-                        "class_name": "TriangleJudger",
-                        "method_name": "getTriangleType"
-                    },
-                    {
-                        "parameters": [2.2, 50.0, 50.0],
-                        "right_result": "等腰三角形",
-                        "real_result": "等腰三角形",
-                        "result": true,
-                        "class_name": "TriangleJudger",
-                        "method_name": "getTriangleType"
-                    },
-                    {
-                        "parameters": [-0.1, 50.0, 50.0],
-                        "right_result": "变量超出取值范围",
-                        "real_result": "变量超出取值范围",
-                        "result": true,
-                        "class_name": "TriangleJudger",
-                        "method_name": "getTriangleType"
-                    }
-                ]
-                //修改param、result显示
-                for (var i = 0; i <res.length; i++) {
-                    if(res[i].result == true){
-                        res[i].result = "true"
-                    }else{
-                        res[i].result = "false"
-                    }
-                    var temp = res[i].parameters
-                    var tempPara = ""
-                    for(var j = 0; j < temp.length; j++){
-                        if(j != 0){
-                            tempPara = tempPara + ", "
-                        }
-                        tempPara = tempPara + temp[j].toString()
-                    }
-                    res[i].parameters = tempPara;
-                }
-                this.tableData = res;
-            },
+
             /*对已上传的测试用例文件列表的操作*/
             handleRemoveFile(file, fileList) {
                 console.log(file, fileList);
@@ -290,7 +251,140 @@
             },
             handlePreviewFile(file) {
                 console.log(file);
-            }
+            },
+
+            /*table高亮*/
+            tableRowClassName({row, rowIndex}) {
+                //待改
+                if(this.tableData[rowIndex].result == "false"){
+                    return 'warning-row';
+                }
+            },
+
+            /*获取table结果数据*/
+            getTableResult(){
+                    /*
+                $.ajax({
+                    url: '/api/test',
+                    type: 'get',
+                    data: {},
+                    dataType: 'json'
+                }).then(function (res) {
+                    console.log(res);
+                    //把从json获取的数据赋值给数组
+                    this.sites = res;
+                }).fail(function () {
+                    console.log('失败');
+                })*/
+                this.successCaseCount = 0
+                this.unSuccessCaseCount = 0
+                this.tableLength = 0
+                var res = [
+                    {
+                        "parameters": [ 0.0, 50.0, 50.0],
+                        "right_result": "变量超出取值范围",
+                        "real_result": "变量超出取值范围",
+                        "result": false,
+                        "class_name": "TriangleJudger",
+                        "method_name": "getTriangleType"
+                    },
+                    {
+                        "parameters": [2.2, 50.0, 50.0],
+                        "right_result": "等腰三角形",
+                        "real_result": "等腰三角形",
+                        "result": true,
+                        "class_name": "TriangleJudger",
+                        "method_name": "getTriangleType"
+                    },
+                    {
+                        "parameters": [ 0.0, 50.0, 50.0],
+                        "right_result": "变量超出取值范围",
+                        "real_result": "变量超出取值范围",
+                        "result": false,
+                        "class_name": "TriangleJudger",
+                        "method_name": "getTriangleType"
+                    },
+                    {
+                        "parameters": [2.2, 50.0, 50.0],
+                        "right_result": "等腰三角形",
+                        "real_result": "等腰三角形",
+                        "result": true,
+                        "class_name": "TriangleJudger",
+                        "method_name": "getTriangleType"
+                    },
+                    {
+                        "parameters": [2.2, 50.0, 50.0],
+                        "right_result": "等腰三角形",
+                        "real_result": "等腰三角形",
+                        "result": true,
+                        "class_name": "TriangleJudger",
+                        "method_name": "getTriangleType"
+                    },
+                ]
+                //修改param、result显示
+                this.tableLength = res.length
+                for (var i = 0; i <res.length; i++) {
+                    if(res[i].result == true){
+                        res[i].result = "true"
+                        this.successCaseCount = this.successCaseCount + 1
+                    }else{
+                        res[i].result = "false"
+                        this.unSuccessCaseCount = this.unSuccessCaseCount + 1
+                    }
+                    var temp = res[i].parameters
+                    var tempPara = ""
+                    for(var j = 0; j < temp.length; j++){
+                        if(j != 0){
+                            tempPara = tempPara + ", "
+                        }
+                        tempPara = tempPara + temp[j].toString()
+                    }
+                    res[i].parameters = tempPara;
+                }
+                this.tableData = res;
+            },
+
+            /*EChart*/
+            drawPieChart() {
+                this.chartPie = echarts.init(
+                    document.getElementById("chartPie"),
+                    'light',
+                );
+                this.chartPie.setOption({
+                    tooltip: {
+                        trigger: "item",
+                        formatter: "{a}<br/>{b}:{c} ({d}%)"
+                    },
+                    legend: {
+                        //bottom: 10,
+                        left: "center",
+                        data: ['成功的测试用例个数', '未成功的测试用例个数']
+                    },
+                    series: [{
+                        name: "状态",
+                        type: "pie",
+                        radius: "65%",
+                        //center: ["50%", "50%"],
+                        avoidLabelOverlap: false,
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: "rgba(0, 0, 0, 0.5)"
+                            },
+                            color: function(params) {
+                                //自定义颜色
+                                var colorList = ["#2dea71", "#66c2ec"];
+                                return colorList[params.dataIndex];
+                            }
+                        },
+                        data: [	// 扇形图数据格式： {value, name}
+                            {value: this.successCaseCount, name: '成功的测试用例个数'},		// value不一定是比例，echarts会自动转换
+                            {value: this.unSuccessCaseCount, name: '未成功的测试用例个数'},
+                        ],
+                    }],
+                })	// echarts设置选项
+            },
         }
     })
 
