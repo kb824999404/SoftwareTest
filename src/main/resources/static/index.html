@@ -63,9 +63,9 @@
 
     <el-container>
         <el-header style="height: 5vh">
-            <el-row :gutter="20">
-                <el-col :span="8">
-                    <a>
+            <el-row>
+                <el-col :span="19">
+                    <a href="index.html">
                         <el-image
                                 style="margin-top:10px;width: 350px;height: 31px"
                                 :src="logoUrl"
@@ -74,8 +74,23 @@
                         </el-image>
                     </a>
                 </el-col>
-                <el-col :span="16">
-                    <!--todo：还没想好放什么-->
+                <el-col :span="5" style="float: right">
+                    <!--todo：使用指南-->
+                    <el-image
+                            style="margin-top:10px;width: 140px;height: 31px"
+                            :src="guideUrl"
+                            :fit="fit"
+                            @click="tipVisible = true"
+                    >
+                    </el-image>
+                    <!--todo:关于我们-->
+                    <el-image
+                            style="margin-top:10px;width: 160px;height: 31px"
+                            :src="aboutUrl"
+                            :fit="fit"
+                            @click="aboutVisible = true"
+                    >
+                    </el-image>
                 </el-col>
             </el-row>
         </el-header>
@@ -385,6 +400,8 @@
         data: {
             helloUrl:"./assets/img/svg/Hello.svg",
             logoUrl:"./assets/img/softwaretest.png",
+            guideUrl:"./assets/img/tip.png",
+            aboutUrl:"./assets/img/about.png",
             formUrl:"./assets/img/svg/Settings.svg",
             uploadUrl:"./assets/img/svg/Search.svg",
             //步骤条切换
@@ -396,6 +413,8 @@
             isShow3:false,
             isShow4:false,
             isShow5:false,
+            tipVisible:false,
+            aboutVisible:false,
             //测试信息
             testName:"",
             testLocation:"",
