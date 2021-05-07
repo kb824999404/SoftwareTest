@@ -5,8 +5,6 @@
     <title>softwareTestTool</title>
     <!--引入vue.js-->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <!-- 引入 echarts.js -->
-    <script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
     <!-- 引入样式 -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <!-- 引入组件库 -->
@@ -15,6 +13,8 @@
     <link rel="icon" href="./assets/img/favicon.png" type="image/png">
     <!--Font-awesome-->
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- 引入Axios -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <style>
         body{
             background-color: rgb(245,252,254); /* 浏览器不支持的时候显示 */
@@ -22,6 +22,27 @@
         }
         .el-step__title.is-finish{
             color:rgb(84,193,219);
+        }
+        .button1{
+            transition: .5s;
+            background-color: rgb(84,193,219);
+            border-color: rgb(84,193,219);
+        }
+        .button1:hover{
+            background-color: white;
+            color: rgb(84,193,219);
+            border-color: rgb(84,193,219);
+        }
+        .button2{
+            transition: .5s;
+            background-color: white;
+            color: rgb(84,193,219);
+            border-color: rgb(84,193,219);
+        }
+        .button2:hover{
+            background-color: rgb(84,193,219);
+            border-color: rgb(84,193,219);
+            color: white;
         }
     </style>
     <!--状态表格-->
@@ -44,7 +65,14 @@
         <el-header style="height: 5vh">
             <el-row :gutter="20">
                 <el-col :span="8">
-                    <span style="color:rgb(5,67,134);font-size: 20px;line-height: 5vh">Software Test Tool</span>
+                    <a>
+                        <el-image
+                                style="margin-top:10px;width: 350px;height: 31px"
+                                :src="logoUrl"
+                                :fit="fit"
+                        >
+                        </el-image>
+                    </a>
                 </el-col>
                 <el-col :span="16">
                     <!--todo：还没想好放什么-->
@@ -54,108 +82,297 @@
         <el-main style="height: 85vh">
             <!--欢迎页面-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="mainIsShow">
-                <el-row>
+                <el-row style="margin-top:8vh;margin-left: 15vw;margin-right: 15vw">
                     <el-col :span="10">
                         <!--todo：图片样式待改-->
                         <el-image
+                                style="margin-top:-2vh;width: 450px;height: 450px"
                                 :src="helloUrl"
                                 :fit="fit"
                         >
                         </el-image>
                     </el-col>
                     <el-col :span="14">
-                        <h2>
+                        <h2 style="font-size: 30px">
                             Welcome to
                         </h2>
-                        <h1 style="color:rgb(5,67,134);font-size: 40px">Software Test Tool</h1>
-                        <p style="color: rgb(178,197,216)">
+                        <h1 style="color:rgb(5,67,134);font-size: 42px">Software Test Tool</h1>
+                        <p style="color: rgb(178,197,216);font-size:16px">
                             Fill basic information,
                             <br/>
                             Choose Java Classes and test cases,
                             <br/>
                             then get results.
                         </p>
-                        <el-button type="primary" round @click="mainTo1()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">Get started<i class="el-icon-right el-icon--right"></i></el-button>
+                        <el-button class="button1" type="primary" round @click="mainTo1()" style="margin-top: 5vh">Get started<i class="el-icon-right el-icon--right"></i></el-button>
                     </el-col>
                 </el-row>
             </el-card>
-            <!--步骤1-->
+            <!--todo:选择测试信息-->
+            <!--步骤1：选择待测信息-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow1">
-                step1
-                <el-button type="primary" round @click="mainTo2()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">选择待测类<i class="el-icon-right el-icon--right"></i></el-button>
-            </el-card>
-            <!--步骤2-->
-            <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow2">
-                step2
-                <el-button type="primary" round @click="mainTo3()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">选择待测方法<i class="el-icon-right el-icon--right"></i></el-button>
-            </el-card>
-            <!--步骤3选择测试用例-->
-            <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow3">
-                上传测试用例
-                <div>
-                    <el-upload
-                            class="upload-demo"
-                            drag=true
-                            action="api/uploadTestCase"
-                            multiple=fasle
-                            show-file-list=true
-                            accept="csv"
-                            :on-preview="handlePreviewFile"
-                            :on-remove="handleRemoveFile">
-                        <i class="el-icon-upload"></i>
-                        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                        <div class="el-upload__tip" slot="tip">只能上传csv文件</div>
-                    </el-upload>
-                </div>
-
-                <el-button type="primary" round @click="mainTo4()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">查看测试结果<i class="el-icon-right el-icon--right"></i></el-button>
-            </el-card>
-            <!--步骤4展示表格、扇形图-->
-            <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow4">
-                展示测试结果
-                <el-row>
-                    <el-col :span="7">
-                        <!--todo：图片样式待改-->
+                <el-row style="margin-left: 10vw;margin-right: 10vw">
+                    <el-col :span="12">
+                        <el-card shadow="hover" style="margin-top: 2vh">
+                            <template #header>
+                                <div class="card-header">
+                                    <h2>Step1</h2>
+                                    <p style="color: rgb(178,197,216);font-size:16px">Fill in the information about this test</p>
+                                </div>
+                            </template>
+                            <el-form ref="form" :model="form" label-width="80px">
+                                <el-form-item label="测试人员">
+                                    <el-input v-model="testName"></el-input>
+                                </el-form-item>
+                                <el-form-item label="测试地点" style="width: 100%">
+                                    <el-radio-group v-model="testLocation">
+                                        <el-radio label="同济大学嘉定校区"></el-radio>
+                                        <el-radio label="同济大学四平校区"></el-radio>
+                                        <el-radio label="其他地点"></el-radio>
+                                    </el-radio-group>
+                                </el-form-item>
+                                <el-form-item label="测试时间">
+                                    <el-date-picker
+                                            v-model="testTime"
+                                            type="datetime"
+                                            placeholder="请选择测试时间"
+                                            style="width: 100%"
+                                            align="right"
+                                            :shortcuts="shortcuts">
+                                    </el-date-picker>
+                                </el-form-item>
+                                <el-form-item label="测试版本">
+                                    <el-select v-model="testVer" placeholder="请选择测试版本" style="width: 100%">
+                                        <el-option label="beta.1.0" value="beta.1.0"></el-option>
+                                        <el-option label="beta.1.1" value="beta.1.1"></el-option>
+                                        <el-option label="beta.2.0" value="beta.2.0"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-form>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="12">
                         <el-image
-                                :src="helloUrl"
+                                style="width: 410px;height: 410px"
+                                :src="formUrl"
                                 :fit="fit"
                         >
                         </el-image>
-                        <div>
-                            <div id="chartPie" style="width: 200px;height: 300px;"></div>
-                        </div>
-                    </el-col>
-                    <el-col :span="17">
-                        <div>
-                            <template>
-                                <el-table
-                                        :data="tableData"
-                                        style="width: 100%"
-                                        max-height="400"
-                                        :row-class-name="tableRowClassName">
-                                    <el-table-column
-                                            v-for="(item, index) in tableLabel"
-                                            :key="index"
-                                            :prop="item.prop"
-                                            :width="item.width"
-                                            :label="item.label">
-                                    </el-table-column>
-                                </el-table>
-                            </template>
-                        </div>
-                        <el-button type="primary" round @click="restart()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)"><i class="el-icon-back el-icon--back"></i>回到首页</el-button>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="24">
+                                <el-button class="button1" type="primary" round @click="mainToWelcome()"
+                                           style="width: 100px;">
+                                    <i class="el-icon-back el-icon--back"></i>
+                                    Back
+                                </el-button>
+                                <el-button class="button2" type="primary" round @click="mainTo2()"
+                                           style="width: 100px;">
+                                    Next
+                                    <i class="el-icon-right el-icon--right"></i>
+                                </el-button>
+                            </el-col>
+                        </el-row>
                     </el-col>
                 </el-row>
-
+            </el-card>
+            <!--步骤2:上传类-->
+            <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow2">
+                <el-row type="flex" justify="center" style="margin-left: 10vw;margin-right: 10vw">
+                    <el-col :span="12">
+                        <el-image
+                                style="width: 400px;height: 400px"
+                                :src="uploadUrl"
+                                :fit="fit"
+                        >
+                        </el-image>
+                        <!-- 换页按钮 -->
+                        <el-row type="flex" justify="center">
+                            <el-col :span="24">
+                                <el-button class="button1" type="primary" round @click="mainTo1()"
+                                           style="width: 100px;">
+                                    <i class="el-icon-back el-icon--back"></i>
+                                    Back
+                                </el-button>
+                                <el-button class="button2" type="primary" round @click="mainTo3()"
+                                           style="width: 100px;">
+                                    Next
+                                    <i class="el-icon-right el-icon--right"></i>
+                                </el-button>
+                            </el-col>
+                        </el-row>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-card shadow="hover" style="margin-top: 2vh">
+                            <template #header>
+                                <div class="card-header">
+                                    <h2>Step2</h2>
+                                    <p style="color: rgb(178,197,216);font-size:16px">Select a Java Classes file and upload.</p>
+                                </div>
+                            </template>
+                            <!-- 上传文件 -->
+                            <el-upload
+                                    ref="upload"
+                                    action="api/uploadClass"
+                                    :on-remove="handleRemove"
+                                    :file-list="fileList"
+                                    :auto-upload="false"
+                                    :on-success="onUploadSuccess"
+                                    limit="1">
+                                <el-button class="button1" slot="trigger" type="primary"
+                                           style="width: 130px;" round>
+                                    Select File
+                                </el-button>
+                                <el-button class="button2" round  type="primary"
+                                           style="width: 130px;" @click="submitUpload">
+                                    Upload Class
+                                </el-button>
+                            </el-upload>
+                        </el-card>
+                    </el-col>
+                </el-row>
+            </el-card>
+            <!--步骤3：-->
+            <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow3">
+                step3
+                <el-row type="flex" justify="center">
+                    <el-col :span="24" style="height: 50vh;">
+                        <el-button type="primary" round @click="mainTo3()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">选择待测方法<i class="el-icon-right el-icon--right"></i></el-button>
+                        <p style="color: rgb(178,197,216)">
+                            Click to select a Java Classes.
+                        </p>
+                        <!-- Java类表格 -->
+                        <el-table
+                            style="width: 300px; margin: auto;"
+                            ref="singleTable"
+                            :data="JavaClasses"
+                            highlight-current-row
+                            @current-change="handleSelectedClassChange">
+                            <el-table-column
+                                property="class_name"
+                                label="Class Name"
+                                align="center"
+                                width="150px">
+                            </el-table-column>
+                            <el-table-column
+                                label="Operation"
+                                align="center"
+                                width="150px">
+                                <template slot-scope="scope">
+                                    <el-button class="button2"
+                                      size="mini" round
+                                      @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
+                                </template>
+                        </el-table-column>
+                      </el-table>
+                    </el-col>
+                  </el-row>
+                  <!-- 换页按钮 -->
+                  <el-row type="flex" justify="center" style="margin-top: 5vh;">
+                      <el-col :span="24">
+                            <el-button class="button1" type="primary" round @click="mainTo2()"
+                                style="width: 100px;">
+                                <i class="el-icon-back el-icon--back"></i>
+                                Back
+                            </el-button>
+                            <el-button class="button2" type="primary" round @click="mainTo4()"
+                                style="width: 100px;">
+                                Next
+                            <i class="el-icon-right el-icon--right"></i>
+                        </el-button>
+                      </el-col>
+                  </el-row>
+            </el-card>
+            <!--步骤4选择待测方法-->
+            <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow4">
+                step4
+                <el-row type="flex" justify="center">
+                    <el-col :span="24" style=" height: 50vh;">
+                        <el-button type="primary" round @click="mainTo4()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">查看测试结果<i class="el-icon-right el-icon--right"></i></el-button>
+                        <p style="color: rgb(178,197,216)">
+                            Selected Class：{{selectedClassName}}
+                        </p>
+                        <div id="testCase">
+                            <el-upload
+                                    class="upload-demo"
+                                    drag="true"
+                                    action="api/uploadTestCase"
+                                    multiple="fasle"
+                                    show-file-list="true"
+                                    accept="csv"
+                                    :on-preview="handlePreviewFile"
+                                    :on-remove="handleRemoveFile">
+                                <i class="el-icon-upload"></i>
+                                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                                <div class="el-upload__tip" slot="tip">只能上传csv文件</div>
+                            </el-upload>
+                        </div>
+                    </el-col>
+                  </el-row>
+                  <!-- 换页按钮 -->
+                  <el-row type="flex" justify="center" style="margin-top: 5vh;">
+                      <el-col :span="24">
+                            <el-button class="button1" type="primary" round @click="mainTo3()"
+                                style="width: 100px;">
+                                <i class="el-icon-back el-icon--back"></i>
+                                Back
+                            </el-button>
+                            <el-button class="button2" type="primary" round @click="mainTo5()"
+                                style="width: 100px;">
+                                Next
+                            <i class="el-icon-right el-icon--right"></i>
+                        </el-button>
+                      </el-col>
+                  </el-row>
+            </el-card>
+            <!--步骤5展示表格、扇形图-->
+            <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow5">
+                step4
+                <div id="table">
+                    <template>
+                        <el-table
+                                :data="tableData"
+                                style="width: 100%"
+                                :row-class-name="tableRowClassName">
+                            <el-table-column
+                                    v-for="(item, index) in tableLabel"
+                                    :key="index"
+                                    :prop="item.prop"
+                                    :width="item.width"
+                                    :label="item.label">
+                            </el-table-column>
+                        </el-table>
+                    </template>
+                </div>
+                <el-row type="flex" justify="center">
+                    <el-col :span="24" style="padding: 20vh; height: 50vh;">
+                    </el-col>
+                  </el-row>
+                  <!-- 换页按钮 -->
+                  <el-row type="flex" justify="center" style="margin-top: 5vh;">
+                      <el-col :span="24">
+                            <el-button class="button1" type="primary" round @click="mainTo3()" 
+                                style="width: 100px;">
+                                <i class="el-icon-back el-icon--back"></i>
+                                Back
+                            </el-button>
+                            <el-button class="button2" type="primary" round @click="mainTo4()" 
+                                style="width: 100px;">
+                                Next
+                            <i class="el-icon-right el-icon--right"></i>
+                        </el-button>
+                      </el-col>
+                  </el-row>
             </el-card>
         </el-main>
         <el-footer style="height: 5vh">
+            <!-- 步骤条 -->
             <el-steps :active="stepActive" simple>
                 <el-step title="welcome" icon="el-icon-s-home"></el-step>
-                <el-step title="step1" icon="el-icon-edit-outline"></el-step>
+                <el-step title="step1" icon="el-icon-setting"></el-step>
                 <el-step title="step2" icon="el-icon-upload"></el-step>
-                <el-step title="step3" icon="el-icon-data-analysis"></el-step>
-                <el-step title="step4" icon="el-icon-s-data"></el-step>
+                <el-step title="step3" icon="el-icon-more-outline"></el-step>
+                <el-step title="step4" icon="el-icon-data-analysis"></el-step>
+                <el-step title="step5" icon="el-icon-s-data"></el-step>
             </el-steps>
         </el-footer>
     </el-container>
@@ -167,6 +384,9 @@
         el: '#app',
         data: {
             helloUrl:"./assets/img/svg/Hello.svg",
+            logoUrl:"./assets/img/softwaretest.png",
+            formUrl:"./assets/img/svg/Settings.svg",
+            uploadUrl:"./assets/img/svg/Search.svg",
             //步骤条切换
             stepActive:0,
             //控制子页面显隐
@@ -175,7 +395,12 @@
             isShow2:false,
             isShow3:false,
             isShow4:false,
-
+            isShow5:false,
+            //测试信息
+            testName:"",
+            testLocation:"",
+            testTime:"",
+            testVer:"",
             /*table*/
             tableData: [],
             tableLabel: [ // 表头数据
@@ -186,52 +411,154 @@
                 {label: 'real_result', width: '', prop: 'real_result'},
                 {label: 'result', width: '', prop: 'result'}
             ],
-            tableLength: 0,
-            successCaseCount: 0,
-            unSuccessCaseCount: 0,
-
+            fileList: [],
+            // Java类
+            JavaClasses : [],
+            selectedClass : null,
+            selectedClassName :"" 
         },
-
         methods:{
+            mainToWelcome(){
+                //显隐切换
+                this.mainIsShow = true;
+                this.isShow1 = false;
+                this.isShow2 = false;
+                this.isShow3 = false;
+                this.isShow4 = false;
+                this.isShow5 = false;
+                //步骤条切换
+                this.stepActive = 0;
+            },
             mainTo1(){
                 //显隐切换
                 this.mainIsShow = false;
                 this.isShow1 = true;
+                this.isShow2 = false;
+                this.isShow3 = false;
+                this.isShow4 = false;
+                this.isShow5 = false;
                 //步骤条切换
                 this.stepActive = 1;
             },
             mainTo2(){
                 //显隐切换
+                this.mainIsShow = false;
                 this.isShow1 = false;
                 this.isShow2 = true;
+                this.isShow3 = false;
+                this.isShow4 = false;
+                this.isShow5 = false;
                 //步骤条切换
                 this.stepActive = 2;
             },
             mainTo3(){
                 //显隐切换
+                this.mainIsShow = false;
+                this.isShow1 = false;
                 this.isShow2 = false;
                 this.isShow3 = true;
+                this.isShow4 = false;
+                this.isShow5 = false;
                 //步骤条切换
                 this.stepActive = 3;
             },
             mainTo4(){
                 //显隐切换
+                this.mainIsShow = false;
+                this.isShow1 = false;
+                this.isShow2 = false;
                 this.isShow3 = false;
                 this.isShow4 = true;
+                this.isShow5 = false;
                 //步骤条切换
                 this.stepActive = 4;
+            },
+            mainTo5(){
+                //显隐切换
+                this.mainIsShow = false;
+                this.isShow1 = false;
+                this.isShow2 = false;
+                this.isShow3 = false;
+                this.isShow4 = false;
+                this.isShow5 = true;
+                //步骤条切换
+                this.stepActive = 5;
                 this.getTableResult();
-                this.drawPieChart();
                 //上传失败的情况
             },
-            restart(){
-                //显隐切换
-                this.isShow4 = false;
-                this.isShow1 = true;
-                //步骤条切换
-                this.stepActive = 1;
-            },
 
+            /*table高亮*/
+            tableRowClassName({row, rowIndex}) {
+                //待改
+
+
+                if (rowIndex === 1) {
+                    return 'warning-row';
+                } else if (rowIndex === 3) {
+                    return 'success-row';
+                }
+                return '';
+            },
+            /*获取table结果数据*/
+            getTableResult(){
+                    /*
+                $.ajax({
+                    url: '/api/test',
+                    type: 'get',
+                    data: {},
+                    dataType: 'json'
+                }).then(function (res) {
+                    console.log(res);
+                    //把从json获取的数据赋值给数组
+                    this.sites = res;
+                }).fail(function () {
+                    console.log('失败');
+                })*/
+                var res = [
+                    {
+                        "parameters": [ 0.0, 50.0, 50.0],
+                        "right_result": "变量超出取值范围",
+                        "real_result": "变量超出取值范围",
+                        "result": true,
+                        "class_name": "TriangleJudger",
+                        "method_name": "getTriangleType"
+                    },
+                    {
+                        "parameters": [2.2, 50.0, 50.0],
+                        "right_result": "等腰三角形",
+                        "real_result": "等腰三角形",
+                        "result": true,
+                        "class_name": "TriangleJudger",
+                        "method_name": "getTriangleType"
+                    },
+                    {
+                        "parameters": [-0.1, 50.0, 50.0],
+                        "right_result": "变量超出取值范围",
+                        "real_result": "变量超出取值范围",
+                        "result": true,
+                        "class_name": "TriangleJudger",
+                        "method_name": "getTriangleType"
+                    }
+                ]
+                //修改param、result显示
+                for (var i = 0; i <res.length; i++) {
+                    if(res[i].result == true){
+                        res[i].result = "true"
+                    }else{
+                        res[i].result = "false"
+                    }
+                    var temp = res[i].parameters
+                    var tempPara = ""
+                    for(var j = 0; j < temp.length; j++){
+                        if(j != 0){
+                            tempPara = tempPara + ", "
+                        }
+                        tempPara = tempPara + temp[j].toString()
+                    }
+                    res[i].parameters = tempPara;
+                }
+                this.tableData = res;
+            },
             /*对已上传的测试用例文件列表的操作*/
             handleRemoveFile(file, fileList) {
                 console.log(file, fileList);
@@ -252,139 +579,72 @@
             handlePreviewFile(file) {
                 console.log(file);
             },
-
-            /*table高亮*/
-            tableRowClassName({row, rowIndex}) {
-                //待改
-                if(this.tableData[rowIndex].result == "false"){
-                    return 'warning-row';
+            submitUpload() {
+                //上传文件
+                this.$refs.upload.submit();
+            },
+            handleRemove(file, fileList) {
+                //移除文件
+                console.log(file, fileList);
+            },
+            onUploadSuccess(response, file, fileList){
+                //上传成功
+                console.log(response);
+                if(response=="success"){
+                    this.$message({
+                        message: 'Upload class successfully!',
+                        type: 'success'
+                    });
+                    this.getClasses();
                 }
             },
-
-            /*获取table结果数据*/
-            getTableResult(){
-                    /*
-                $.ajax({
-                    url: '/api/test',
-                    type: 'get',
-                    data: {},
-                    dataType: 'json'
-                }).then(function (res) {
-                    console.log(res);
-                    //把从json获取的数据赋值给数组
-                    this.sites = res;
-                }).fail(function () {
-                    console.log('失败');
-                })*/
-                this.successCaseCount = 0
-                this.unSuccessCaseCount = 0
-                this.tableLength = 0
-                var res = [
-                    {
-                        "parameters": [ 0.0, 50.0, 50.0],
-                        "right_result": "变量超出取值范围",
-                        "real_result": "变量超出取值范围",
-                        "result": false,
-                        "class_name": "TriangleJudger",
-                        "method_name": "getTriangleType"
-                    },
-                    {
-                        "parameters": [2.2, 50.0, 50.0],
-                        "right_result": "等腰三角形",
-                        "real_result": "等腰三角形",
-                        "result": true,
-                        "class_name": "TriangleJudger",
-                        "method_name": "getTriangleType"
-                    },
-                    {
-                        "parameters": [ 0.0, 50.0, 50.0],
-                        "right_result": "变量超出取值范围",
-                        "real_result": "变量超出取值范围",
-                        "result": false,
-                        "class_name": "TriangleJudger",
-                        "method_name": "getTriangleType"
-                    },
-                    {
-                        "parameters": [2.2, 50.0, 50.0],
-                        "right_result": "等腰三角形",
-                        "real_result": "等腰三角形",
-                        "result": true,
-                        "class_name": "TriangleJudger",
-                        "method_name": "getTriangleType"
-                    },
-                    {
-                        "parameters": [2.2, 50.0, 50.0],
-                        "right_result": "等腰三角形",
-                        "real_result": "等腰三角形",
-                        "result": true,
-                        "class_name": "TriangleJudger",
-                        "method_name": "getTriangleType"
-                    },
-                ]
-                //修改param、result显示
-                this.tableLength = res.length
-                for (var i = 0; i <res.length; i++) {
-                    if(res[i].result == true){
-                        res[i].result = "true"
-                        this.successCaseCount = this.successCaseCount + 1
-                    }else{
-                        res[i].result = "false"
-                        this.unSuccessCaseCount = this.unSuccessCaseCount + 1
-                    }
-                    var temp = res[i].parameters
-                    var tempPara = ""
-                    for(var j = 0; j < temp.length; j++){
-                        if(j != 0){
-                            tempPara = tempPara + ", "
-                        }
-                        tempPara = tempPara + temp[j].toString()
-                    }
-                    res[i].parameters = tempPara;
-                }
-                this.tableData = res;
+            getClasses(){
+                // 获取后端的Java类
+                axios.get('api/getClasses')
+                    .then(response => {
+                        this.JavaClasses = response.data;
+                    });
             },
-
-            /*EChart*/
-            drawPieChart() {
-                this.chartPie = echarts.init(
-                    document.getElementById("chartPie"),
-                    'light',
-                );
-                this.chartPie.setOption({
-                    tooltip: {
-                        trigger: "item",
-                        formatter: "{a}<br/>{b}:{c} ({d}%)"
-                    },
-                    legend: {
-                        //bottom: 10,
-                        left: "center",
-                        data: ['成功的测试用例个数', '未成功的测试用例个数']
-                    },
-                    series: [{
-                        name: "状态",
-                        type: "pie",
-                        radius: "65%",
-                        //center: ["50%", "50%"],
-                        avoidLabelOverlap: false,
-                        itemStyle: {
-                            emphasis: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: "rgba(0, 0, 0, 0.5)"
-                            },
-                            color: function(params) {
-                                //自定义颜色
-                                var colorList = ["#2dea71", "#66c2ec"];
-                                return colorList[params.dataIndex];
+            //选择Java类
+            handleSelectedClassChange(val) {
+                this.selectedClass = val;
+                this.selectedClassName = val.class_name;
+            },
+            // 删除Java类
+            handleDelete(index,row){
+                console.log(row);
+                this.$confirm('Delete this Java Class?', 'Inform', {
+                        confirmButtonText: 'Confirm',
+                        cancelButtonText: 'Cancel',
+                        type: 'warning'
+                    }).then(() => {
+                        axios.get('api/removeClass',
+                        {
+                            params:{
+                                class_name:row.class_name
                             }
-                        },
-                        data: [	// 扇形图数据格式： {value, name}
-                            {value: this.successCaseCount, name: '成功的测试用例个数'},		// value不一定是比例，echarts会自动转换
-                            {value: this.unSuccessCaseCount, name: '未成功的测试用例个数'},
-                        ],
-                    }],
-                })	// echarts设置选项
-            },
+                        })
+                        .then(response => {
+                            console.log(response.data);
+                            if(response.data=="success"){
+                                this.$message({
+                                    type: 'success',
+                                    message: 'Delete Succseefully!'
+                                });
+                                this.getClasses();
+                            }
+                        });
+
+                    }).catch(() => {
+                        this.$message({
+                            type: 'info',
+                            message: 'Cancel Delete!'
+                        });          
+                });
+            }
+        },
+        created(){
+            this.getClasses();
         }
     })
 
