@@ -45,6 +45,17 @@
             color: white;
         }
     </style>
+    <!--状态表格-->
+    <style>
+        .el-table .warning-row {
+            background: oldlace;
+        }
+        .el-table .success-row {
+            background: #f0f9eb;
+        }
+    </style>
+
+
 </head>
 
 <body>
@@ -92,6 +103,7 @@
             <!--步骤1-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow1">
                 step1
+                <el-button type="primary" round @click="mainTo2()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">选择待测类<i class="el-icon-right el-icon--right"></i></el-button>
                 <el-row type="flex" justify="center">
                   <el-col :span="24" style="padding: 20vh; height: 50vh;">
                     <p style="color: rgb(178,197,216)">
@@ -136,6 +148,7 @@
             <!--步骤2-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow2">
                 step2
+                <el-button type="primary" round @click="mainTo3()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">选择待测方法<i class="el-icon-right el-icon--right"></i></el-button>
                 <el-row type="flex" justify="center">
                     <el-col :span="24" style="height: 50vh;">
                         <p style="color: rgb(178,197,216)">
@@ -183,9 +196,25 @@
                       </el-col>
                   </el-row>
             </el-card>
-            <!--步骤3-->
+            <!--步骤3选择待测方法-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow3">
                 step3
+                <div id="testCase">
+                    <el-upload
+                            class="upload-demo"
+                            drag="true"
+                            action="api/uploadTestCase"
+                            multiple="fasle"
+                            show-file-list="true"
+                            accept="csv"
+                            :on-preview="handlePreviewFile"
+                            :on-remove="handleRemoveFile">
+                        <i class="el-icon-upload"></i>
+                        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                        <div class="el-upload__tip" slot="tip">只能上传csv文件</div>
+                    </el-upload>
+                </div>
+                <el-button type="primary" round @click="mainTo4()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">查看测试结果<i class="el-icon-right el-icon--right"></i></el-button>
                 <el-row type="flex" justify="center">
                     <el-col :span="24" style="padding: 20vh; height: 50vh;">
                         <p style="color: rgb(178,197,216)">
@@ -209,9 +238,25 @@
                       </el-col>
                   </el-row>
             </el-card>
-            <!--步骤4-->
+            <!--步骤4展示表格、扇形图-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow4">
                 step4
+                <div id="table">
+                    <template>
+                        <el-table
+                                :data="tableData"
+                                style="width: 100%"
+                                :row-class-name="tableRowClassName">
+                            <el-table-column
+                                    v-for="(item, index) in tableLabel"
+                                    :key="index"
+                                    :prop="item.prop"
+                                    :width="item.width"
+                                    :label="item.label">
+                            </el-table-column>
+                        </el-table>
+                    </template>
+                </div>
                 <el-row type="flex" justify="center">
                     <el-col :span="24" style="padding: 20vh; height: 50vh;">
                     </el-col>
@@ -260,6 +305,17 @@
             isShow2:false,
             isShow3:false,
             isShow4:false,
+
+            /*table*/
+            tableData: [],
+            tableLabel: [ // 表头数据
+                {label: 'class_name', width: '', prop: 'class_name'},
+                {label: 'method_name', width: '', prop: 'method_name'},
+                {label: 'parameters', width: '', prop: 'parameters'},
+                {label: 'right_result', width: '', prop: 'right_result'},
+                {label: 'real_result', width: '', prop: 'real_result'},
+                {label: 'result', width: '', prop: 'result'}
+            ]
             fileList: [],
             // Java类
             JavaClasses : [],
@@ -316,6 +372,101 @@
                 this.isShow4 = true;
                 //步骤条切换
                 this.stepActive = 4;
+                this.getTableResult();
+                //上传失败的情况
+            },
+
+            /*table高亮*/
+            tableRowClassName({row, rowIndex}) {
+                //待改
+
+
+                if (rowIndex === 1) {
+                    return 'warning-row';
+                } else if (rowIndex === 3) {
+                    return 'success-row';
+                }
+                return '';
+            },
+            /*获取table结果数据*/
+            getTableResult(){
+                    /*
+                $.ajax({
+                    url: '/api/test',
+                    type: 'get',
+                    data: {},
+                    dataType: 'json'
+                }).then(function (res) {
+                    console.log(res);
+                    //把从json获取的数据赋值给数组
+                    this.sites = res;
+                }).fail(function () {
+                    console.log('失败');
+                })*/
+                var res = [
+                    {
+                        "parameters": [ 0.0, 50.0, 50.0],
+                        "right_result": "变量超出取值范围",
+                        "real_result": "变量超出取值范围",
+                        "result": true,
+                        "class_name": "TriangleJudger",
+                        "method_name": "getTriangleType"
+                    },
+                    {
+                        "parameters": [2.2, 50.0, 50.0],
+                        "right_result": "等腰三角形",
+                        "real_result": "等腰三角形",
+                        "result": true,
+                        "class_name": "TriangleJudger",
+                        "method_name": "getTriangleType"
+                    },
+                    {
+                        "parameters": [-0.1, 50.0, 50.0],
+                        "right_result": "变量超出取值范围",
+                        "real_result": "变量超出取值范围",
+                        "result": true,
+                        "class_name": "TriangleJudger",
+                        "method_name": "getTriangleType"
+                    }
+                ]
+                //修改param、result显示
+                for (var i = 0; i <res.length; i++) {
+                    if(res[i].result == true){
+                        res[i].result = "true"
+                    }else{
+                        res[i].result = "false"
+                    }
+                    var temp = res[i].parameters
+                    var tempPara = ""
+                    for(var j = 0; j < temp.length; j++){
+                        if(j != 0){
+                            tempPara = tempPara + ", "
+                        }
+                        tempPara = tempPara + temp[j].toString()
+                    }
+                    res[i].parameters = tempPara;
+                }
+                this.tableData = res;
+            },
+            /*对已上传的测试用例文件列表的操作*/
+            handleRemoveFile(file, fileList) {
+                console.log(file, fileList);
+                /*
+                $.ajax({
+                    url: 'api/removeMethod',
+                    type: 'get??',
+                    data: {},
+                    dataType: 'json'
+                }).then(function (res) {
+                    console.log(res);
+                    //把从json获取的数据赋值给数组
+                    this.sites = res;
+                }).fail(function () {
+                    console.log('失败');
+                })*/
+            },
+            handlePreviewFile(file) {
+                console.log(file);
             },
             submitUpload() {
                 //上传文件
@@ -385,6 +536,7 @@
             this.getClasses();
         }
     })
+
 </script>
 </body>
 
