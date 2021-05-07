@@ -93,9 +93,13 @@
                 <div id="testCase">
                     <el-upload
                             class="upload-demo"
-                            drag
+                            drag="true"
                             action="api/uploadTestCase"
-                            multiple>
+                            multiple="fasle"
+                            show-file-list="true"
+                            accept="csv"
+                            :on-preview="handlePreviewFile"
+                            :on-remove="handleRemoveFile">
                         <i class="el-icon-upload"></i>
                         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                         <div class="el-upload__tip" slot="tip">只能上传csv文件</div>
@@ -151,6 +155,17 @@
             isShow2:false,
             isShow3:false,
             isShow4:false,
+
+            /*table*/
+            tableData: [],
+            tableLabel: [ // 表头数据
+                {label: 'class_name', width: '', prop: 'class_name'},
+                {label: 'method_name', width: '', prop: 'method_name'},
+                {label: 'parameters', width: '', prop: 'parameters'},
+                {label: 'right_result', width: '', prop: 'right_result'},
+                {label: 'real_result', width: '', prop: 'real_result'},
+                {label: 'result', width: '', prop: 'result'}
+            ]
         },
         methods:{
             mainTo1(){
@@ -180,70 +195,104 @@
                 this.isShow4 = true;
                 //步骤条切换
                 this.stepActive = 4;
+                this.getTableResult();
+                //上传失败的情况
+            },
+
+            /*table高亮*/
+            tableRowClassName({row, rowIndex}) {
+                //待改
+
+
+                if (rowIndex === 1) {
+                    return 'warning-row';
+                } else if (rowIndex === 3) {
+                    return 'success-row';
+                }
+                return '';
+            },
+            /*获取table结果数据*/
+            getTableResult(){
+                    /*
+                $.ajax({
+                    url: '/api/test',
+                    type: 'get',
+                    data: {},
+                    dataType: 'json'
+                }).then(function (res) {
+                    console.log(res);
+                    //把从json获取的数据赋值给数组
+                    this.sites = res;
+                }).fail(function () {
+                    console.log('失败');
+                })*/
+                var res = [
+                    {
+                        "parameters": [ 0.0, 50.0, 50.0],
+                        "right_result": "变量超出取值范围",
+                        "real_result": "变量超出取值范围",
+                        "result": true,
+                        "class_name": "TriangleJudger",
+                        "method_name": "getTriangleType"
+                    },
+                    {
+                        "parameters": [2.2, 50.0, 50.0],
+                        "right_result": "等腰三角形",
+                        "real_result": "等腰三角形",
+                        "result": true,
+                        "class_name": "TriangleJudger",
+                        "method_name": "getTriangleType"
+                    },
+                    {
+                        "parameters": [-0.1, 50.0, 50.0],
+                        "right_result": "变量超出取值范围",
+                        "real_result": "变量超出取值范围",
+                        "result": true,
+                        "class_name": "TriangleJudger",
+                        "method_name": "getTriangleType"
+                    }
+                ]
+                //修改param、result显示
+                for (var i = 0; i <res.length; i++) {
+                    if(res[i].result == true){
+                        res[i].result = "true"
+                    }else{
+                        res[i].result = "false"
+                    }
+                    var temp = res[i].parameters
+                    var tempPara = ""
+                    for(var j = 0; j < temp.length; j++){
+                        if(j != 0){
+                            tempPara = tempPara + ", "
+                        }
+                        tempPara = tempPara + temp[j].toString()
+                    }
+                    res[i].parameters = tempPara;
+                }
+                this.tableData = res;
+            },
+            /*对已上传的测试用例文件列表的操作*/
+            handleRemoveFile(file, fileList) {
+                console.log(file, fileList);
+                /*
+                $.ajax({
+                    url: 'api/removeMethod',
+                    type: 'get??',
+                    data: {},
+                    dataType: 'json'
+                }).then(function (res) {
+                    console.log(res);
+                    //把从json获取的数据赋值给数组
+                    this.sites = res;
+                }).fail(function () {
+                    console.log('失败');
+                })*/
+            },
+            handlePreviewFile(file) {
+                console.log(file);
             }
         }
     })
-
-    new Vue().$mount('#testCase')
-
-    var table = new Vue({
-        el: '#table',
-        data: {
-            tableData: [],
-            tableLabel: [ // 表头数据
-                {label: 'class_name', width: '60', prop: 'class_name'},
-                {label: 'method_name', width: '', prop: 'method_name'},
-                {label: 'parameters', width: '', prop: 'parameters'},
-                {label: 'right_result', width: '', prop: 'right_result'},
-                {label: 'real_result', width: '', prop: 'real_result'},
-                {label: 'result', width: '', prop: 'result'}
-            ]
-        },
-        created: function () {
-            /*
-            $.ajax({
-                url: '/api/test',
-                type: 'get',
-                data: {},
-                dataType: 'json'
-            }).then(function (res) {
-                console.log(res);
-                //把从json获取的数据赋值给数组
-                this.sites = res;
-            }).fail(function () {
-                console.log('失败');
-            })*/
-            var res = [
-                {
-                    "parameters": [ 0.0, 50.0, 50.0],
-                    "right_result": "变量超出取值范围",
-                    "real_result": "变量超出取值范围",
-                    "result": true,
-                    "class_name": "TriangleJudger",
-                    "method_name": "getTriangleType"
-                },
-                {
-                    "parameters": [2.2, 50.0, 50.0],
-                    "right_result": "等腰三角形",
-                    "real_result": "等腰三角形",
-                    "result": true,
-                    "class_name": "TriangleJudger",
-                    "method_name": "getTriangleType"
-                },
-                {
-                    "parameters": [-0.1, 50.0, 50.0],
-                    "right_result": "变量超出取值范围",
-                    "real_result": "变量超出取值范围",
-                    "result": true,
-                    "class_name": "TriangleJudger",
-                    "method_name": "getTriangleType"
-                }
-            ]
-            this.tableData = res;
-        }
-    })
-
-
 
 </script>
 </body>
