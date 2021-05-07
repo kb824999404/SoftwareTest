@@ -177,45 +177,57 @@
             </el-card>
             <!--步骤2:上传类-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow2">
-                <h2>Step2</h2>
-                <el-row type="flex" justify="center">
-                  <el-col :span="24" style="padding: 20vh; height: 50vh;">
-                    <p style="color: rgb(178,197,216)">
-                        Select a Java Classes file and upload.
-                    </p>
-                    <!-- 上传文件 -->
-                    <el-upload
-                        ref="upload"
-                        action="api/uploadClass"
-                        :on-remove="handleRemove"
-                        :file-list="fileList"
-                        :auto-upload="false"
-                        :on-success="onUploadSuccess"
-                        :limit="1">
-                        <el-button class="button1" slot="trigger" type="primary" 
-                            style="width: 130px;" round>
-                            Select File
-                        </el-button>
-                        <el-button class="button2" round  type="primary"
-                            style="width: 130px;" @click="submitUpload">
-                            Upload Class
-                        </el-button>
-                    </el-upload>
-                  </el-col>
-                </el-row>
-                <!-- 换页按钮 -->
-                <el-row type="flex" justify="center" style="margin-top: 5vh;">
-                    <el-col :span="24">
-                        <el-button class="button1" type="primary" round @click="mainTo2()"
-                            style="width: 100px;">
-                            <i class="el-icon-back el-icon--back"></i>
-                            Back
-                        </el-button>
-                        <el-button class="button2" type="primary" round @click="mainTo3()"
-                            style="width: 100px;">
-                            Next
-                        <i class="el-icon-right el-icon--right"></i>
-                    </el-button>
+                <el-row type="flex" justify="center" style="margin-left: 10vw;margin-right: 10vw">
+                    <el-col :span="12">
+                        <el-image
+                                style="width: 400px;height: 400px"
+                                :src="uploadUrl"
+                                :fit="fit"
+                        >
+                        </el-image>
+                        <!-- 换页按钮 -->
+                        <el-row type="flex" justify="center">
+                            <el-col :span="24">
+                                <el-button class="button1" type="primary" round @click="mainTo1()"
+                                           style="width: 100px;">
+                                    <i class="el-icon-back el-icon--back"></i>
+                                    Back
+                                </el-button>
+                                <el-button class="button2" type="primary" round @click="mainTo3()"
+                                           style="width: 100px;">
+                                    Next
+                                    <i class="el-icon-right el-icon--right"></i>
+                                </el-button>
+                            </el-col>
+                        </el-row>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-card shadow="hover" style="margin-top: 2vh">
+                            <template #header>
+                                <div class="card-header">
+                                    <h2>Step2</h2>
+                                    <p style="color: rgb(178,197,216);font-size:16px">Select a Java Classes file and upload.</p>
+                                </div>
+                            </template>
+                            <!-- 上传文件 -->
+                            <el-upload
+                                    ref="upload"
+                                    action="api/uploadClass"
+                                    :on-remove="handleRemove"
+                                    :file-list="fileList"
+                                    :auto-upload="false"
+                                    :on-success="onUploadSuccess"
+                                    limit="1">
+                                <el-button class="button1" slot="trigger" type="primary"
+                                           style="width: 130px;" round>
+                                    Select File
+                                </el-button>
+                                <el-button class="button2" round  type="primary"
+                                           style="width: 130px;" @click="submitUpload">
+                                    Upload Class
+                                </el-button>
+                            </el-upload>
+                        </el-card>
                     </el-col>
                 </el-row>
             </el-card>
@@ -257,7 +269,7 @@
                   <!-- 换页按钮 -->
                   <el-row type="flex" justify="center" style="margin-top: 5vh;">
                       <el-col :span="24">
-                            <el-button class="button1" type="primary" round @click="mainTo3()"
+                            <el-button class="button1" type="primary" round @click="mainTo2()"
                                 style="width: 100px;">
                                 <i class="el-icon-back el-icon--back"></i>
                                 Back
@@ -272,7 +284,7 @@
             </el-card>
             <!--步骤4选择待测方法-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow4">
-                step3
+                step4
                 <el-row type="flex" justify="center">
                     <el-col :span="24" style=" height: 50vh;">
                         <el-button type="primary" round @click="mainTo4()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">查看测试结果<i class="el-icon-right el-icon--right"></i></el-button>
@@ -299,7 +311,7 @@
                   <!-- 换页按钮 -->
                   <el-row type="flex" justify="center" style="margin-top: 5vh;">
                       <el-col :span="24">
-                            <el-button class="button1" type="primary" round @click="mainTo4()"
+                            <el-button class="button1" type="primary" round @click="mainTo3()"
                                 style="width: 100px;">
                                 <i class="el-icon-back el-icon--back"></i>
                                 Back
@@ -374,6 +386,7 @@
             helloUrl:"./assets/img/svg/Hello.svg",
             logoUrl:"./assets/img/softwaretest.png",
             formUrl:"./assets/img/svg/Settings.svg",
+            uploadUrl:"./assets/img/svg/Search.svg",
             //步骤条切换
             stepActive:0,
             //控制子页面显隐
