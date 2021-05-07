@@ -5,6 +5,8 @@
     <title>softwareTestTool</title>
     <!--引入vue.js-->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- 引入 echarts.js -->
+    <script src="https://cdn.bootcss.com/echarts/4.2.1-rc1/echarts.min.js"></script>
     <!-- 引入样式 -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <!-- 引入组件库 -->
@@ -302,11 +304,11 @@
                 step4
                 <el-row type="flex" justify="center">
                     <el-col :span="24" style=" height: 50vh;">
-                        <el-button type="primary" round @click="mainTo4()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">查看测试结果<i class="el-icon-right el-icon--right"></i></el-button>
+
                         <p style="color: rgb(178,197,216)">
                             Selected Class：{{selectedClassName}}
                         </p>
-                        <div id="testCase">
+                        <div>
                             <el-upload
                                     class="upload-demo"
                                     drag="true"
@@ -341,29 +343,40 @@
             </el-card>
             <!--步骤5展示表格、扇形图-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow5">
-                step4
-                <div id="table">
-                    <template>
-                        <el-table
-                                :data="tableData"
-                                style="width: 100%"
-                                :row-class-name="tableRowClassName">
-                            <el-table-column
-                                    v-for="(item, index) in tableLabel"
-                                    :key="index"
-                                    :prop="item.prop"
-                                    :width="item.width"
-                                    :label="item.label">
-                            </el-table-column>
-                        </el-table>
-                    </template>
-                </div>
-                <el-row type="flex" justify="center">
-                    <el-col :span="24" style="padding: 20vh; height: 50vh;">
+                <el-row type="flex" justify="center" style="margin-top: 5vh;">
+                    <el-col :span="7">
+                        <!--todo：achievement-->
+                        <el-image
+                                :src="achievementUrl"
+                                :fit="fit"
+                        >
+                        </el-image>
+                        <div>
+                            <div id="chartPie" style="width: 50vh;height: 300px;"></div>
+                        </div>
+                    </el-col>
+                    <el-col :span="17">
+                        <div>
+                            <template>
+                                <el-table
+                                        :data="tableData"
+                                        style="width: 100%"
+                                        height="400"
+                                        :row-class-name="tableRowClassName">
+                                    <el-table-column
+                                            v-for="(item, index) in tableLabel"
+                                            :key="index"
+                                            :prop="item.prop"
+                                            :width="item.width"
+                                            :label="item.label">
+                                    </el-table-column>
+                                </el-table>
+                            </template>
+                        </div>
                     </el-col>
                   </el-row>
                   <!-- 换页按钮 -->
-                  <el-row type="flex" justify="center" style="margin-top: 5vh;">
+                  <el-row type="flex" justify="center" style="margin-top: -5vh;">
                       <el-col :span="24">
                             <el-button class="button1" type="primary" round @click="mainTo3()" 
                                 style="width: 100px;">
@@ -404,6 +417,7 @@
             aboutUrl:"./assets/img/about.png",
             formUrl:"./assets/img/svg/Settings.svg",
             uploadUrl:"./assets/img/svg/Search.svg",
+            achievementUrl:"./assets/img/svg/Achievement.svg",
             //步骤条切换
             stepActive:0,
             //控制子页面显隐
@@ -430,6 +444,10 @@
                 {label: 'real_result', width: '', prop: 'real_result'},
                 {label: 'result', width: '', prop: 'result'}
             ],
+            tableLength: 0,
+            successCaseCount: 0,
+            unSuccessCaseCount: 0,
+
             fileList: [],
             // Java类
             JavaClasses : [],
@@ -503,42 +521,42 @@
                 //步骤条切换
                 this.stepActive = 5;
                 this.getTableResult();
+                this.drawPieChart();
                 //上传失败的情况
             },
 
             /*table高亮*/
             tableRowClassName({row, rowIndex}) {
                 //待改
-
-
-                if (rowIndex === 1) {
+                if(this.tableData[rowIndex].result == "false"){
                     return 'warning-row';
-                } else if (rowIndex === 3) {
-                    return 'success-row';
                 }
-                return '';
             },
+
             /*获取table结果数据*/
             getTableResult(){
-                    /*
-                $.ajax({
-                    url: '/api/test',
-                    type: 'get',
-                    data: {},
-                    dataType: 'json'
-                }).then(function (res) {
-                    console.log(res);
-                    //把从json获取的数据赋值给数组
-                    this.sites = res;
-                }).fail(function () {
-                    console.log('失败');
-                })*/
+                /*
+            $.ajax({
+                url: '/api/test',
+                type: 'get',
+                data: {},
+                dataType: 'json'
+            }).then(function (res) {
+                console.log(res);
+                //把从json获取的数据赋值给数组
+                this.sites = res;
+            }).fail(function () {
+                console.log('失败');
+            })*/
+                this.successCaseCount = 0
+                this.unSuccessCaseCount = 0
+                this.tableLength = 0
                 var res = [
                     {
                         "parameters": [ 0.0, 50.0, 50.0],
                         "right_result": "变量超出取值范围",
                         "real_result": "变量超出取值范围",
-                        "result": true,
+                        "result": false,
                         "class_name": "TriangleJudger",
                         "method_name": "getTriangleType"
                     },
@@ -550,21 +568,16 @@
                         "class_name": "TriangleJudger",
                         "method_name": "getTriangleType"
                     },
-                    {
-                        "parameters": [-0.1, 50.0, 50.0],
-                        "right_result": "变量超出取值范围",
-                        "real_result": "变量超出取值范围",
-                        "result": true,
-                        "class_name": "TriangleJudger",
-                        "method_name": "getTriangleType"
-                    }
                 ]
                 //修改param、result显示
+                this.tableLength = res.length
                 for (var i = 0; i <res.length; i++) {
                     if(res[i].result == true){
                         res[i].result = "true"
+                        this.successCaseCount = this.successCaseCount + 1
                     }else{
                         res[i].result = "false"
+                        this.unSuccessCaseCount = this.unSuccessCaseCount + 1
                     }
                     var temp = res[i].parameters
                     var tempPara = ""
@@ -598,6 +611,49 @@
             handlePreviewFile(file) {
                 console.log(file);
             },
+
+            /*EChart*/
+            drawPieChart() {
+                this.chartPie = echarts.init(
+                    document.getElementById("chartPie"),
+                    'light',
+                );
+                this.chartPie.setOption({
+                    tooltip: {
+                        trigger: "item",
+                        formatter: "{a}<br/>{b}:{c} ({d}%)"
+                    },
+                    legend: {
+                        //bottom: 10,
+                        left: "center",
+                        data: ['成功的测试用例个数', '未成功的测试用例个数']
+                    },
+                    series: [{
+                        name: "状态",
+                        type: "pie",
+                        radius: "65%",
+                        //center: ["50%", "50%"],
+                        avoidLabelOverlap: false,
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: "rgba(0, 0, 0, 0.5)"
+                            },
+                            color: function(params) {
+                                //自定义颜色
+                                var colorList = ["#2dea71", "#66c2ec"];
+                                return colorList[params.dataIndex];
+                            }
+                        },
+                        data: [	// 扇形图数据格式： {value, name}
+                            {value: this.successCaseCount, name: '成功的测试用例个数'},		// value不一定是比例，echarts会自动转换
+                            {value: this.unSuccessCaseCount, name: '未成功的测试用例个数'},
+                        ],
+                    }],
+                })	// echarts设置选项
+            },
+
             submitUpload() {
                 //上传文件
                 this.$refs.upload.submit();
