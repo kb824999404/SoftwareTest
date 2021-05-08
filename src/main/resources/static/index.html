@@ -27,6 +27,7 @@
             transition: .5s;
             background-color: rgb(84,193,219);
             border-color: rgb(84,193,219);
+            color: white;
         }
         .button1:hover{
             background-color: white;
@@ -43,6 +44,13 @@
             background-color: rgb(84,193,219);
             border-color: rgb(84,193,219);
             color: white;
+        }
+        .el-table{
+            transition: .5s;
+            box-shadow: rgba(0,0,0,0.1) 0 0 5px;
+        }
+        .el-table:hover{
+            box-shadow: rgba(0,0,0,0.2) 0 0 8px;
         }
     </style>
     <!--状态表格-->
@@ -69,7 +77,6 @@
                         <el-image
                                 style="margin-top:10px;width: 350px;height: 31px"
                                 :src="logoUrl"
-                                :fit="fit"
                         >
                         </el-image>
                     </a>
@@ -79,7 +86,6 @@
                     <el-image
                             style="margin-top:10px;width: 140px;height: 31px"
                             :src="guideUrl"
-                            :fit="fit"
                             @click="tipVisible = true"
                     >
                     </el-image>
@@ -87,7 +93,6 @@
                     <el-image
                             style="margin-top:10px;width: 160px;height: 31px"
                             :src="aboutUrl"
-                            :fit="fit"
                             @click="aboutVisible = true"
                     >
                     </el-image>
@@ -103,7 +108,6 @@
                         <el-image
                                 style="margin-top:-2vh;width: 450px;height: 450px"
                                 :src="helloUrl"
-                                :fit="fit"
                         >
                         </el-image>
                     </el-col>
@@ -135,7 +139,7 @@
                                     <p style="color: rgb(178,197,216);font-size:16px">Fill in the information about this test</p>
                                 </div>
                             </template>
-                            <el-form ref="form" :model="form" label-width="80px">
+                            <el-form ref="form"  label-width="80px">
                                 <el-form-item label="测试人员">
                                     <el-input v-model="testName"></el-input>
                                 </el-form-item>
@@ -152,8 +156,7 @@
                                             type="datetime"
                                             placeholder="请选择测试时间"
                                             style="width: 100%"
-                                            align="right"
-                                            :shortcuts="shortcuts">
+                                            align="right">
                                     </el-date-picker>
                                 </el-form-item>
                                 <el-form-item label="测试版本">
@@ -170,7 +173,6 @@
                         <el-image
                                 style="width: 410px;height: 410px"
                                 :src="formUrl"
-                                :fit="fit"
                         >
                         </el-image>
                         <el-row type="flex" justify="center">
@@ -197,7 +199,6 @@
                         <el-image
                                 style="width: 400px;height: 400px"
                                 :src="uploadUrl"
-                                :fit="fit"
                         >
                         </el-image>
                         <!-- 换页按钮 -->
@@ -232,7 +233,8 @@
                                     :file-list="fileList"
                                     :auto-upload="false"
                                     :on-success="onUploadSuccess"
-                                    limit="1">
+                                    :multiple="true"
+                                    :limit="5">
                                 <el-button class="button1" slot="trigger" type="primary"
                                            style="width: 130px;" round>
                                     Select File
@@ -250,15 +252,15 @@
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow3">
                 step3
                 <el-row type="flex" justify="center">
-                    <el-col :span="24" style="height: 50vh;">
-                        <el-button type="primary" round @click="mainTo3()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">选择待测方法<i class="el-icon-right el-icon--right"></i></el-button>
+                    <el-col :span="12" style="height: 50vh;">
                         <p style="color: rgb(178,197,216)">
                             Click to select a Java Classes.
                         </p>
                         <!-- Java类表格 -->
                         <el-table
-                            style="width: 300px; margin: auto;"
-                            ref="singleTable"
+                            style="width: 500px; margin: auto;"
+                            ref="classTable"
+                            height="250px"
                             :data="JavaClasses"
                             highlight-current-row
                             @current-change="handleSelectedClassChange">
@@ -266,19 +268,60 @@
                                 property="class_name"
                                 label="Class Name"
                                 align="center"
-                                width="150px">
+                                width="300px">
                             </el-table-column>
                             <el-table-column
                                 label="Operation"
                                 align="center"
-                                width="150px">
+                                width="200px">
                                 <template slot-scope="scope">
+                                    <el-button class="button1"
+                                    size="mini" round
+                                    @click="onClassSelected(scope.$index, scope.row)">Select</el-button>
                                     <el-button class="button2"
                                       size="mini" round
                                       @click="handleDelete(scope.$index, scope.row)">Delete</el-button>
                                 </template>
                         </el-table-column>
                       </el-table>
+                    </el-col>
+                    <el-col :span="12">
+                        <p style="color: rgb(178,197,216)">
+                            Selected Class：{{selectedClassName}}
+                        </p>
+                        <!-- 类方法表格 -->
+                        <el-table
+                            style="width: 500px; margin: auto;"
+                            ref="methodTable"
+                            height="250px"
+                            :data="classMethods"
+                            highlight-current-row>
+                        <el-table-column
+                            property="method_name"
+                            label="Method Name"
+                            align="center"
+                            width="150px">
+                        </el-table-column>
+                        <el-table-column
+                            property="test_case"
+                            label="Test Case"
+                            align="center"
+                            width="150px">
+                        </el-table-column>
+                        <el-table-column
+                            label="Operation"
+                            align="center"
+                            width="200px">
+                            <template slot-scope="scope">
+                                <el-button class="button1"
+                                size="mini" round>
+                                Upload</el-button>
+                                <el-button class="button2"
+                                    size="mini" round>
+                                    Delete</el-button>
+                            </template>
+                    </el-table-column>
+                    </el-table>
                     </el-col>
                   </el-row>
                   <!-- 换页按钮 -->
@@ -309,10 +352,10 @@
                         <div id="testCase">
                             <el-upload
                                     class="upload-demo"
-                                    drag="true"
+                                    :drag="true"
                                     action="api/uploadTestCase"
-                                    multiple="fasle"
-                                    show-file-list="true"
+                                    :multiple="false"
+                                    :show-file-list="true"
                                     accept="csv"
                                     :on-preview="handlePreviewFile"
                                     :on-remove="handleRemoveFile">
@@ -433,8 +476,9 @@
             fileList: [],
             // Java类
             JavaClasses : [],
+            classMethods : [],
             selectedClass : null,
-            selectedClassName :"" 
+            selectedClassName :"",
         },
         methods:{
             mainToWelcome(){
@@ -614,6 +658,7 @@
                         message: 'Upload class successfully!',
                         type: 'success'
                     });
+                    this.fileList = [];
                     this.getClasses();
                 }
             },
@@ -628,6 +673,17 @@
             handleSelectedClassChange(val) {
                 this.selectedClass = val;
                 this.selectedClassName = val.class_name;
+                var classMethods = [];
+                var methodNames = val.methods.simple_name;
+                var testCases = val.test_cases;
+                for(var i=0;i<methodNames.length;i++){
+                    classMethods.push({"method_name":methodNames[i],
+                        "test_case":(testCases[i]==null)?"None":testCases[i]});
+                }
+                this.classMethods = classMethods;
+            },
+            onClassSelected(index,row){
+                handleSelectedClassChange(row);
             },
             // 删除Java类
             handleDelete(index,row){
