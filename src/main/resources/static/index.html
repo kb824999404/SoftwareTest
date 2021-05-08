@@ -63,90 +63,192 @@
 
     <el-container>
         <el-header style="height: 5vh">
-            <el-row :gutter="20">
-                <el-col :span="8">
-                    <span style="color:rgb(5,67,134);font-size: 20px;line-height: 5vh">Software Test Tool</span>
+            <el-row>
+                <el-col :span="19">
+                    <a href="index.html">
+                        <el-image
+                                style="margin-top:10px;width: 350px;height: 31px"
+                                :src="logoUrl"
+                                :fit="fit"
+                        >
+                        </el-image>
+                    </a>
                 </el-col>
-                <el-col :span="16">
-                    <!--todo：还没想好放什么-->
+                <el-col :span="5" style="float: right">
+                    <!--todo：使用指南-->
+                    <el-image
+                            style="margin-top:10px;width: 140px;height: 31px"
+                            :src="guideUrl"
+                            :fit="fit"
+                            @click="tipVisible = true"
+                    >
+                    </el-image>
+                    <!--todo:关于我们-->
+                    <el-image
+                            style="margin-top:10px;width: 160px;height: 31px"
+                            :src="aboutUrl"
+                            :fit="fit"
+                            @click="aboutVisible = true"
+                    >
+                    </el-image>
                 </el-col>
             </el-row>
         </el-header>
         <el-main style="height: 85vh">
             <!--欢迎页面-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="mainIsShow">
-                <el-row>
+                <el-row style="margin-top:8vh;margin-left: 15vw;margin-right: 15vw">
                     <el-col :span="10">
                         <!--todo：图片样式待改-->
                         <el-image
+                                style="margin-top:-2vh;width: 450px;height: 450px"
                                 :src="helloUrl"
                                 :fit="fit"
                         >
                         </el-image>
                     </el-col>
                     <el-col :span="14">
-                        <h2>
+                        <h2 style="font-size: 30px">
                             Welcome to
                         </h2>
-                        <h1 style="color:rgb(5,67,134);font-size: 40px">Software Test Tool</h1>
-                        <p style="color: rgb(178,197,216)">
+                        <h1 style="color:rgb(5,67,134);font-size: 42px">Software Test Tool</h1>
+                        <p style="color: rgb(178,197,216);font-size:16px">
                             Fill basic information,
                             <br/>
                             Choose Java Classes and test cases,
                             <br/>
                             then get results.
                         </p>
-                        <el-button class="button1" type="primary" round @click="mainTo1()">Get started<i class="el-icon-right el-icon--right"></i></el-button>
+                        <el-button class="button1" type="primary" round @click="mainTo1()" style="margin-top: 5vh">Get started<i class="el-icon-right el-icon--right"></i></el-button>
                     </el-col>
                 </el-row>
             </el-card>
-            <!--步骤1-->
+            <!--todo:选择测试信息-->
+            <!--步骤1：选择待测信息-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow1">
-                step1
-                <el-row type="flex" justify="center">
-                  <el-col :span="24" style="padding: 20vh; height: 50vh;">
-                    <p style="color: rgb(178,197,216)">
-                        Select a Java Classes file and upload.
-                    </p>
-                    <!-- 上传文件 -->
-                    <el-upload
-                        ref="upload"
-                        action="api/uploadClass"
-                        :on-remove="handleRemove"
-                        :file-list="fileList"
-                        :auto-upload="false"
-                        :on-success="onUploadSuccess"
-                        :limit="1">
-                        <el-button class="button1" slot="trigger" type="primary" 
-                            style="width: 130px;" round>
-                            Select File
-                        </el-button>
-                        <el-button class="button2" round  type="primary"
-                            style="width: 130px;" @click="submitUpload">
-                            Upload Class
-                        </el-button>
-                    </el-upload>
-                  </el-col>
-                </el-row>
-                <!-- 换页按钮 -->
-                <el-row type="flex" justify="center" style="margin-top: 5vh;">
-                    <el-col :span="24">
-                        <el-button class="button1" type="primary" round @click="mainToWelcome()" 
-                            style="width: 100px;">
-                            <i class="el-icon-back el-icon--back"></i>
-                            Back
-                        </el-button>
-                        <el-button class="button2" type="primary" round @click="mainTo2()" 
-                            style="width: 100px;">
-                            Next
-                        <i class="el-icon-right el-icon--right"></i>
-                    </el-button>
+                <el-row style="margin-left: 10vw;margin-right: 10vw">
+                    <el-col :span="12">
+                        <el-card shadow="hover" style="margin-top: 2vh">
+                            <template #header>
+                                <div class="card-header">
+                                    <h2>Step1</h2>
+                                    <p style="color: rgb(178,197,216);font-size:16px">Fill in the information about this test</p>
+                                </div>
+                            </template>
+                            <el-form ref="form" :model="form" label-width="80px">
+                                <el-form-item label="测试人员">
+                                    <el-input v-model="testName"></el-input>
+                                </el-form-item>
+                                <el-form-item label="测试地点" style="width: 100%">
+                                    <el-radio-group v-model="testLocation">
+                                        <el-radio label="同济大学嘉定校区"></el-radio>
+                                        <el-radio label="同济大学四平校区"></el-radio>
+                                        <el-radio label="其他地点"></el-radio>
+                                    </el-radio-group>
+                                </el-form-item>
+                                <el-form-item label="测试时间">
+                                    <el-date-picker
+                                            v-model="testTime"
+                                            type="datetime"
+                                            placeholder="请选择测试时间"
+                                            style="width: 100%"
+                                            align="right"
+                                            :shortcuts="shortcuts">
+                                    </el-date-picker>
+                                </el-form-item>
+                                <el-form-item label="测试版本">
+                                    <el-select v-model="testVer" placeholder="请选择测试版本" style="width: 100%">
+                                        <el-option label="beta.1.0" value="beta.1.0"></el-option>
+                                        <el-option label="beta.1.1" value="beta.1.1"></el-option>
+                                        <el-option label="beta.2.0" value="beta.2.0"></el-option>
+                                    </el-select>
+                                </el-form-item>
+                            </el-form>
+                        </el-card>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-image
+                                style="width: 410px;height: 410px"
+                                :src="formUrl"
+                                :fit="fit"
+                        >
+                        </el-image>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="24">
+                                <el-button class="button1" type="primary" round @click="mainToWelcome()"
+                                           style="width: 100px;">
+                                    <i class="el-icon-back el-icon--back"></i>
+                                    Back
+                                </el-button>
+                                <el-button class="button2" type="primary" round @click="mainTo2()"
+                                           style="width: 100px;">
+                                    Next
+                                    <i class="el-icon-right el-icon--right"></i>
+                                </el-button>
+                            </el-col>
+                        </el-row>
                     </el-col>
                 </el-row>
             </el-card>
-            <!--步骤2-->
+            <!--步骤2:上传类-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow2">
-                step2
+                <el-row type="flex" justify="center" style="margin-left: 10vw;margin-right: 10vw">
+                    <el-col :span="12">
+                        <el-image
+                                style="width: 400px;height: 400px"
+                                :src="uploadUrl"
+                                :fit="fit"
+                        >
+                        </el-image>
+                        <!-- 换页按钮 -->
+                        <el-row type="flex" justify="center">
+                            <el-col :span="24">
+                                <el-button class="button1" type="primary" round @click="mainTo1()"
+                                           style="width: 100px;">
+                                    <i class="el-icon-back el-icon--back"></i>
+                                    Back
+                                </el-button>
+                                <el-button class="button2" type="primary" round @click="mainTo3()"
+                                           style="width: 100px;">
+                                    Next
+                                    <i class="el-icon-right el-icon--right"></i>
+                                </el-button>
+                            </el-col>
+                        </el-row>
+                    </el-col>
+                    <el-col :span="12">
+                        <el-card shadow="hover" style="margin-top: 2vh">
+                            <template #header>
+                                <div class="card-header">
+                                    <h2>Step2</h2>
+                                    <p style="color: rgb(178,197,216);font-size:16px">Select a Java Classes file and upload.</p>
+                                </div>
+                            </template>
+                            <!-- 上传文件 -->
+                            <el-upload
+                                    ref="upload"
+                                    action="api/uploadClass"
+                                    :on-remove="handleRemove"
+                                    :file-list="fileList"
+                                    :auto-upload="false"
+                                    :on-success="onUploadSuccess"
+                                    limit="1">
+                                <el-button class="button1" slot="trigger" type="primary"
+                                           style="width: 130px;" round>
+                                    Select File
+                                </el-button>
+                                <el-button class="button2" round  type="primary"
+                                           style="width: 130px;" @click="submitUpload">
+                                    Upload Class
+                                </el-button>
+                            </el-upload>
+                        </el-card>
+                    </el-col>
+                </el-row>
+            </el-card>
+            <!--步骤3：-->
+            <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow3">
+                step3
                 <el-row type="flex" justify="center">
                     <el-col :span="24" style="height: 50vh;">
                         <el-button type="primary" round @click="mainTo3()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">选择待测方法<i class="el-icon-right el-icon--right"></i></el-button>
@@ -182,12 +284,12 @@
                   <!-- 换页按钮 -->
                   <el-row type="flex" justify="center" style="margin-top: 5vh;">
                       <el-col :span="24">
-                            <el-button class="button1" type="primary" round @click="mainTo1()" 
+                            <el-button class="button1" type="primary" round @click="mainTo2()"
                                 style="width: 100px;">
                                 <i class="el-icon-back el-icon--back"></i>
                                 Back
                             </el-button>
-                            <el-button class="button2" type="primary" round @click="mainTo3()" 
+                            <el-button class="button2" type="primary" round @click="mainTo4()"
                                 style="width: 100px;">
                                 Next
                             <i class="el-icon-right el-icon--right"></i>
@@ -195,9 +297,9 @@
                       </el-col>
                   </el-row>
             </el-card>
-            <!--步骤3选择待测方法-->
-            <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow3">
-                step3
+            <!--步骤4选择待测方法-->
+            <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow4">
+                step4
                 <el-row type="flex" justify="center">
                     <el-col :span="24" style=" height: 50vh;">
                         <el-button type="primary" round @click="mainTo4()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">查看测试结果<i class="el-icon-right el-icon--right"></i></el-button>
@@ -224,12 +326,12 @@
                   <!-- 换页按钮 -->
                   <el-row type="flex" justify="center" style="margin-top: 5vh;">
                       <el-col :span="24">
-                            <el-button class="button1" type="primary" round @click="mainTo2()" 
+                            <el-button class="button1" type="primary" round @click="mainTo3()"
                                 style="width: 100px;">
                                 <i class="el-icon-back el-icon--back"></i>
                                 Back
                             </el-button>
-                            <el-button class="button2" type="primary" round @click="mainTo4()" 
+                            <el-button class="button2" type="primary" round @click="mainTo5()"
                                 style="width: 100px;">
                                 Next
                             <i class="el-icon-right el-icon--right"></i>
@@ -237,8 +339,8 @@
                       </el-col>
                   </el-row>
             </el-card>
-            <!--步骤4展示表格、扇形图-->
-            <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow4">
+            <!--步骤5展示表格、扇形图-->
+            <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow5">
                 step4
                 <div id="table">
                     <template>
@@ -281,10 +383,11 @@
             <!-- 步骤条 -->
             <el-steps :active="stepActive" simple>
                 <el-step title="welcome" icon="el-icon-s-home"></el-step>
-                <el-step title="step1" icon="el-icon-edit-outline"></el-step>
+                <el-step title="step1" icon="el-icon-setting"></el-step>
                 <el-step title="step2" icon="el-icon-upload"></el-step>
-                <el-step title="step3" icon="el-icon-data-analysis"></el-step>
-                <el-step title="step4" icon="el-icon-s-data"></el-step>
+                <el-step title="step3" icon="el-icon-more-outline"></el-step>
+                <el-step title="step4" icon="el-icon-data-analysis"></el-step>
+                <el-step title="step5" icon="el-icon-s-data"></el-step>
             </el-steps>
         </el-footer>
     </el-container>
@@ -296,6 +399,11 @@
         el: '#app',
         data: {
             helloUrl:"./assets/img/svg/Hello.svg",
+            logoUrl:"./assets/img/softwaretest.png",
+            guideUrl:"./assets/img/tip.png",
+            aboutUrl:"./assets/img/about.png",
+            formUrl:"./assets/img/svg/Settings.svg",
+            uploadUrl:"./assets/img/svg/Search.svg",
             //步骤条切换
             stepActive:0,
             //控制子页面显隐
@@ -304,7 +412,14 @@
             isShow2:false,
             isShow3:false,
             isShow4:false,
-
+            isShow5:false,
+            tipVisible:false,
+            aboutVisible:false,
+            //测试信息
+            testName:"",
+            testLocation:"",
+            testTime:"",
+            testVer:"",
             /*table*/
             tableData: [],
             tableLabel: [ // 表头数据
@@ -329,6 +444,7 @@
                 this.isShow2 = false;
                 this.isShow3 = false;
                 this.isShow4 = false;
+                this.isShow5 = false;
                 //步骤条切换
                 this.stepActive = 0;
             },
@@ -339,6 +455,7 @@
                 this.isShow2 = false;
                 this.isShow3 = false;
                 this.isShow4 = false;
+                this.isShow5 = false;
                 //步骤条切换
                 this.stepActive = 1;
             },
@@ -349,6 +466,7 @@
                 this.isShow2 = true;
                 this.isShow3 = false;
                 this.isShow4 = false;
+                this.isShow5 = false;
                 //步骤条切换
                 this.stepActive = 2;
             },
@@ -359,6 +477,7 @@
                 this.isShow2 = false;
                 this.isShow3 = true;
                 this.isShow4 = false;
+                this.isShow5 = false;
                 //步骤条切换
                 this.stepActive = 3;
             },
@@ -369,8 +488,20 @@
                 this.isShow2 = false;
                 this.isShow3 = false;
                 this.isShow4 = true;
+                this.isShow5 = false;
                 //步骤条切换
                 this.stepActive = 4;
+            },
+            mainTo5(){
+                //显隐切换
+                this.mainIsShow = false;
+                this.isShow1 = false;
+                this.isShow2 = false;
+                this.isShow3 = false;
+                this.isShow4 = false;
+                this.isShow5 = true;
+                //步骤条切换
+                this.stepActive = 5;
                 this.getTableResult();
                 //上传失败的情况
             },
