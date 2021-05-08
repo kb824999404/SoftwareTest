@@ -15,6 +15,8 @@
     <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <!-- 引入Axios -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <!-- 引入ECharts -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.0.2/dist/echarts.min.js"></script>
     <style>
         body{
             background-color: rgb(245,252,254); /* 浏览器不支持的时候显示 */
@@ -344,10 +346,15 @@
                   <!-- 换页按钮 -->
                   <el-row type="flex" justify="center" style="margin-top: 5vh;">
                       <el-col :span="24">
-                            <el-button class="button1" type="primary" round @click="mainTo2()"
+                            <el-button class="button1" type="primary" round @click="mainTo2()" 
                                 style="width: 100px;">
                                 <i class="el-icon-back el-icon--back"></i>
                                 Back
+                            </el-button>
+                            <el-button class="button2" type="primary" round @click="mainTo4()" 
+                                style="width: 100px;">
+                                Next
+                            <i class="el-icon-right el-icon--right"></i>
                             </el-button>
                         </el-button>
                       </el-col>
@@ -362,7 +369,8 @@
                             <template>
                                 <el-table
                                         :data="tableData"
-                                        style="width: 100%"
+                                        style="width: 90%;margin: auto;margin-top: 30px;"
+                                        height="250px"
                                         :row-class-name="tableRowClassName">
                                     <el-table-column
                                             v-for="(item, index) in tableLabel"
@@ -379,31 +387,35 @@
                   <!-- 换页按钮 -->
                   <el-row type="flex" justify="center" style="margin-top: 5vh;">
                       <el-col :span="24">
-                            <el-button type="primary" round @click="mainTo4()" style="background-color: rgb(84,193,219);border-color: rgb(84,193,219)">查看测试结果<i class="el-icon-right el-icon--right"></i></el-button>
+                        <el-button class="button1" type="primary" round @click="mainTo3()" 
+                            style="width: 100px;">
+                            <i class="el-icon-back el-icon--back"></i>
+                            Back
+                        </el-button>
+                        <el-button class="button2" type="primary" round @click="mainTo5()" 
+                            style="width: 100px;">
+                            Next
+                        <i class="el-icon-right el-icon--right"></i>
                         </el-button>
                       </el-col>
                   </el-row>
             </el-card>
             <!--步骤5展示表格、扇形图-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow5">
-                step4
+                step5
                 <el-row type="flex" justify="center">
-                    <el-col :span="24" style="padding: 20vh; height: 50vh;">
+                    <el-col :span="24" style="height: 50vh;">
+                        <div id="echart-canvas" style="width: 500px;height:350px;margin: auto;"></div>
                     </el-col>
                   </el-row>
                   <!-- 换页按钮 -->
                   <el-row type="flex" justify="center" style="margin-top: 5vh;">
                       <el-col :span="24">
-                            <el-button class="button1" type="primary" round @click="mainTo3()" 
+                            <el-button class="button1" type="primary" round @click="mainTo4()" 
                                 style="width: 100px;">
                                 <i class="el-icon-back el-icon--back"></i>
                                 Back
                             </el-button>
-                            <el-button class="button2" type="primary" round @click="mainTo4()" 
-                                style="width: 100px;">
-                                Next
-                            <i class="el-icon-right el-icon--right"></i>
-                        </el-button>
                       </el-col>
                   </el-row>
             </el-card>
@@ -469,6 +481,48 @@
             selectedMethod :"",
             selectedMethodIndex : -1,
             dialogTestCaseVisible:false,
+            testResult:[
+                {value: 0, name: 'False'},
+                {value: 0, name: 'True'},
+            ],
+            // ECharts选项
+            echartsOption: {	
+                title: {
+                    text: 'Test Result',
+                    left: 'center',
+                    textStyle: {
+                        color: 'rgb(143,189,224)'
+                    }
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                },
+                series: [
+                    {
+                        name: 'Test Result',
+                        type: 'pie',
+                        radius: '60%',
+                        data: [
+                            {value: 0, name: 'False'},
+                            {value: 0, name: 'True'},
+                        ],
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ],
+                color:[
+                    '#fff5a4','rgb(143,189,224)'
+                ]   
+            }
         },
         methods:{
             mainToWelcome(){
@@ -537,6 +591,7 @@
                 this.isShow5 = true;
                 //步骤条切换
                 this.stepActive = 5;
+                this.showResultFigures();
             },
 
             /*table高亮*/
@@ -563,12 +618,16 @@
                         .then(response => {
                             console.log(response.data);
                             var res = response.data;
+                            this.testResult[0].value = 0;
+                            this.testResult[1].value = 0;
                             //修改param、result显示
                             for (var i = 0; i <res.length; i++) {
                                 if(res[i].result == true){
                                     res[i].result = "true"
+                                    this.testResult[1].value+=1;
                                 }else{
                                     res[i].result = "false"
+                                    this.testResult[0].value+=1;
                                 }
                                 var temp = res[i].parameters
                                 var tempPara = ""
@@ -582,32 +641,6 @@
                             }
                             this.tableData = res;
                         });
-                // var res = [
-                //     {
-                //         "parameters": [ 0.0, 50.0, 50.0],
-                //         "right_result": "变量超出取值范围",
-                //         "real_result": "变量超出取值范围",
-                //         "result": true,
-                //         "class_name": "TriangleJudger",
-                //         "method_name": "getTriangleType"
-                //     },
-                //     {
-                //         "parameters": [2.2, 50.0, 50.0],
-                //         "right_result": "等腰三角形",
-                //         "real_result": "等腰三角形",
-                //         "result": true,
-                //         "class_name": "TriangleJudger",
-                //         "method_name": "getTriangleType"
-                //     },
-                //     {
-                //         "parameters": [-0.1, 50.0, 50.0],
-                //         "right_result": "变量超出取值范围",
-                //         "real_result": "变量超出取值范围",
-                //         "result": true,
-                //         "class_name": "TriangleJudger",
-                //         "method_name": "getTriangleType"
-                //     }
-                // ]
 
             },
             /*对已上传的测试用例文件列表的操作*/
@@ -747,10 +780,21 @@
                             message: 'Cancel Delete!'
                         });          
                 });
+            },
+            showResultFigures(){
+                // 初始化echarts, theme为light
+                let myChart = echarts.init(document.getElementById('echart-canvas'), 'light');
+                // echarts设置选项	
+                this.echartsOption.series[0].data = this.testResult;
+                myChart.setOption(this.echartsOption);	
+                // window.onresize = myChart.resize;
             }
         },
         created(){
             this.getClasses();
+        },
+        mounted(){
+            // this.showResultFigures();
         }
     })
 
