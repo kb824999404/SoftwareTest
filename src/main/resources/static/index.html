@@ -239,7 +239,9 @@
                                     :auto-upload="false"
                                     :on-success="onUploadSuccess"
                                     :multiple="true"
-                                    :limit="5">
+                                    :limit="5"
+                                    style="height: 35vh"
+                            >
                                 <el-button class="button1" slot="trigger" type="primary"
                                            style="width: 130px;" round>
                                     Select File
@@ -377,7 +379,7 @@
                                 <el-table
                                         :data="tableData"
                                         style="width: 90%;margin: auto;margin-top: 30px;"
-                                        height="250px"
+                                        height="46vh"
                                         :row-class-name="tableRowClassName">
                                     <el-table-column
                                             v-for="(item, index) in tableLabel"
