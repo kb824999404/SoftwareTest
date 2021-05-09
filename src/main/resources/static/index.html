@@ -131,7 +131,8 @@
             </el-card>
             <!--todo:选择测试信息-->
             <!--步骤1：选择待测信息-->
-            <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow1">
+            <transition name="el-zoom-in-center">
+                <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow1">
                 <el-row style="margin-left: 10vw;margin-right: 10vw">
                     <el-col :span="12">
                         <el-card shadow="hover" style="margin-top: 2vh">
@@ -194,8 +195,10 @@
                     </el-col>
                 </el-row>
             </el-card>
+            </transition>
             <!--步骤2:上传类-->
-            <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow2">
+            <transition name="el-zoom-in-center">
+                <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow2">
                 <el-row type="flex" justify="center" style="margin-left: 10vw;margin-right: 10vw">
                     <el-col :span="12">
                         <el-image
@@ -250,8 +253,10 @@
                     </el-col>
                 </el-row>
             </el-card>
+            </transition>
             <!--步骤3：-->
-            <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow3">
+            <transition name="el-zoom-in-center">
+                <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow3">
                 <h2>Step3</h2>
                 <el-row type="flex" justify="center">
                     <el-col :span="12" style="height: 50vh;">
@@ -360,8 +365,10 @@
                       </el-col>
                   </el-row>
             </el-card>
-            <!--步骤4展示测试用例结果-->
-            <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow4">
+            </transition>
+            <!--步骤4选择待测方法-->
+            <transition name="el-zoom-in-center">
+                <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow4">
                 <h2>Step4</h2>
                 <el-row type="flex" justify="center">
                     <el-col :span="24" style=" height: 50vh;">
@@ -400,8 +407,15 @@
                       </el-col>
                   </el-row>
             </el-card>
+<<<<<<< Updated upstream
             <!--步骤5展示扇形图-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow5">
+=======
+            </transition>
+            <!--步骤5展示表格、扇形图-->
+            <transition name="el-zoom-in-center">
+                <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow5">
+>>>>>>> Stashed changes
                 <h2>Step5</h2>
                 <el-row type="flex" justify="center">
                     <el-col :span="24" style="height: 50vh;">
@@ -416,13 +430,14 @@
                                 <i class="el-icon-back el-icon--back"></i>
                                 Back
                             </el-button>
-                            <el-button class="button1" type="primary" round @click="reload()">
+                            <el-button class="button2" type="primary" round @click="reload()">
                                 <i class="el-icon-refresh-right el-icon--right"></i>
                                 ReTest
                             </el-button>
                       </el-col>
                   </el-row>
             </el-card>
+            </transition>
         </el-main>
         <el-footer style="height: 5vh">
             <!-- 步骤条 -->
@@ -534,23 +549,23 @@
             },
             mainToWelcome(){
                 //显隐切换
-                this.mainIsShow = true;
                 this.isShow1 = false;
                 this.isShow2 = false;
                 this.isShow3 = false;
                 this.isShow4 = false;
                 this.isShow5 = false;
+                this.mainIsShow = true;
                 //步骤条切换
                 this.stepActive = 0;
             },
             mainTo1(){
                 //显隐切换
                 this.mainIsShow = false;
-                this.isShow1 = true;
                 this.isShow2 = false;
                 this.isShow3 = false;
                 this.isShow4 = false;
                 this.isShow5 = false;
+                this.isShow1 = true;
                 //步骤条切换
                 this.stepActive = 1;
             },
@@ -558,10 +573,10 @@
                 //显隐切换
                 this.mainIsShow = false;
                 this.isShow1 = false;
-                this.isShow2 = true;
                 this.isShow3 = false;
                 this.isShow4 = false;
                 this.isShow5 = false;
+                this.isShow2 = true;
                 //步骤条切换
                 this.stepActive = 2;
             },
@@ -570,9 +585,9 @@
                 this.mainIsShow = false;
                 this.isShow1 = false;
                 this.isShow2 = false;
-                this.isShow3 = true;
                 this.isShow4 = false;
                 this.isShow5 = false;
+                this.isShow3 = true;
                 //步骤条切换
                 this.stepActive = 3;
             },
@@ -582,8 +597,8 @@
                 this.isShow1 = false;
                 this.isShow2 = false;
                 this.isShow3 = false;
-                this.isShow4 = true;
                 this.isShow5 = false;
+                this.isShow4 = true;
                 //步骤条切换
                 this.stepActive = 4;
                 this.getTableResult();
