@@ -88,14 +88,14 @@
                     <el-image
                             style="margin-top:10px;width: 140px;height: 31px"
                             :src="guideUrl"
-                            @click="tipVisible = true"
+                            @click="tip()"
                     >
                     </el-image>
                     <!--todo:关于我们-->
                     <el-image
                             style="margin-top:10px;width: 160px;height: 31px"
                             :src="aboutUrl"
-                            @click="aboutVisible = true"
+                            @click="about()"
                     >
                     </el-image>
                 </el-col>
@@ -129,7 +129,6 @@
                     </el-col>
                 </el-row>
             </el-card>
-            <!--todo:选择测试信息-->
             <!--步骤1：选择待测信息-->
             <transition name="el-zoom-in-center">
                 <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow1">
@@ -448,7 +447,34 @@
             </el-steps>
         </el-footer>
     </el-container>
-
+    <el-dialog
+            title="Guide"
+            :visible.sync="tipVisible"
+            width="30%"
+            center>
+        <div>
+            <el-steps direction="vertical" :active="stepActive">
+                <el-step title="Step1" description="设置本次测试的基本信息"></el-step>
+                <el-step title="Step2" description="上传需要测试的类（可以同时上传多个）"></el-step>
+                <el-step title="Step3" description="选择需要测试的类和对应方法"></el-step>
+                <el-step title="Step4" description="表格展示测试结果"></el-step>
+                <el-step title="Step5" description="图形化展示测试结果"></el-step>
+            </el-steps>
+        </div>
+        <span slot="footer" class="dialog-footer">
+            <el-button class="button1" @click="tipVisible = false">确 定</el-button>
+        </span>
+    </el-dialog>
+    <el-dialog
+            title="About us"
+            :visible.sync="aboutVisible"
+            width="30%"
+            center>
+        <span>我们是TJU18级软件工程专业的学生，如果对本网站有何建议或问题请随时联系：tjuxxxx@tj.com</span>
+        <span slot="footer" class="dialog-footer">
+            <el-button class="button1" @click="aboutVisible = false">确 定</el-button>
+        </span>
+    </el-dialog>
 </div>
 
 <script>
@@ -543,6 +569,12 @@
         methods:{
             reload(){
                 window.location.reload();
+            },
+            tip(){
+                this.tipVisible = true;
+            },
+            about(){
+                this.aboutVisible=true;
             },
             mainToWelcome(){
                 //显隐切换
