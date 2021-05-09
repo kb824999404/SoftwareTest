@@ -360,7 +360,7 @@
                       </el-col>
                   </el-row>
             </el-card>
-            <!--步骤4选择待测方法-->
+            <!--步骤4展示测试用例结果-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow4">
                 <h2>Step4</h2>
                 <el-row type="flex" justify="center">
@@ -400,7 +400,7 @@
                       </el-col>
                   </el-row>
             </el-card>
-            <!--步骤5展示表格、扇形图-->
+            <!--步骤5展示扇形图-->
             <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow5">
                 <h2>Step5</h2>
                 <el-row type="flex" justify="center">
@@ -603,15 +603,10 @@
 
             /*table高亮*/
             tableRowClassName({row, rowIndex}) {
-                //待改
-
-
-                if (rowIndex === 1) {
+                //失败的测试结果高亮
+                if(this.tableData[rowIndex].result == "false"){
                     return 'warning-row';
-                } else if (rowIndex === 3) {
-                    return 'success-row';
                 }
-                return '';
             },
             /*获取table结果数据*/
             getTableResult(index,row){
@@ -648,7 +643,6 @@
                             }
                             this.tableData = res;
                         });
-
             },
             /*对已上传的测试用例文件列表的操作*/
             handleRemoveFile(file, fileList) {
