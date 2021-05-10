@@ -17,6 +17,12 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <!-- 引入ECharts -->
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.0.2/dist/echarts.min.js"></script>
+    <!-- 引入JSPDF -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf/dist/jspdf.umd.js"></script>
+    <!-- JSPDF表格 -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.14/dist/jspdf.plugin.autotable.min.js"></script>
+    <!-- JSPDF中文字体 -->
+    <script src="https://cdn.jsdelivr.net/npm/vxe-table-plugin-export-pdf/fonts/source-han-sans-normal.js"></script>
     <style>
         body{
             background-color: rgb(245,252,254); /* 浏览器不支持的时候显示 */
@@ -424,6 +430,8 @@
                         </el-image>
                     </el-col>
                     <el-col :span="12" style="height: 50vh;">
+                        <el-button class="button2" type="primary" size="mini" round
+                        style="margin: 10px 0;" @click="saveReport">导出测试报告</el-button>
                         <div id="echart-canvas" style="width: 500px;height:350px;margin: auto;"></div>
                     </el-col>
                   </el-row>
@@ -843,6 +851,33 @@
                 this.echartsOption.series[0].data = this.testResult;
                 myChart.setOption(this.echartsOption);	
                 // window.onresize = myChart.resize;
+            },
+            // 导出测试报告
+            saveReport(){
+                var doc = new jspdf.jsPDF();
+                doc.setFontSize(36);
+                doc.addFont('SourceHanSans-Normal.ttf', 'SourceHanSans-Normal', 'normal');
+                doc.setFont('SourceHanSans-Normal');
+                // 标题
+                doc.text(80, 25, '测试报告');
+                // 测试信息
+                doc.setFontSize(12);
+                doc.text(15,40,"测试人员："+this.testName);
+                doc.text(65,40,"测试地点："+this.testLocation);
+                doc.text(130,40,"测试版本："+this.testVer);
+                doc.text(15,50,"测试时间："+this.testTime);
+                // 表格
+                var head = [];
+                this.tableLabel.forEach(element => {
+                    var label = element.label;
+                    head.push({ header:label,dataKey:label})
+                });
+                doc.autoTable({
+                    startY: 60,
+                    body: this.tableData ,
+                    columns: head
+                });
+                doc.save("report.pdf");
             }
         },
         created(){
