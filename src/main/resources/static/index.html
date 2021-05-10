@@ -415,8 +415,15 @@
             <transition name="el-zoom-in-center">
                 <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow5">
                 <h2>Step5</h2>
-                <el-row type="flex" justify="center">
-                    <el-col :span="24" style="height: 50vh;">
+                <el-row type="flex" justify="center" style="margin-left: 15vw;margin-right: 15vw">
+                    <el-col :span="12" style="height: 50vh;">
+                        <el-image
+                                style="width: 400px;height: 400px"
+                                :src="resUrl"
+                        >
+                        </el-image>
+                    </el-col>
+                    <el-col :span="12" style="height: 50vh;">
                         <div id="echart-canvas" style="width: 500px;height:350px;margin: auto;"></div>
                     </el-col>
                   </el-row>
@@ -489,6 +496,7 @@
             aboutUrl:"./assets/img/about.png",
             formUrl:"./assets/img/svg/Settings.svg",
             uploadUrl:"./assets/img/svg/Search.svg",
+            resUrl:"./assets/img/svg/Deadline.svg",
             //步骤条切换
             stepActive:0,
             //控制子页面显隐
