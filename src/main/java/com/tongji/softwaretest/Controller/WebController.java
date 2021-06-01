@@ -141,4 +141,13 @@ public class WebController {
         return TestServices.testClass(FileConfig.ClassPath + class_name+"."+class_name,
                 FileConfig.JavaFilePath + class_name + "/" + method_name + ".csv", method_name);
     }
+
+    @GetMapping("singletest")
+    @ResponseBody
+    public List<TestResult> singletest(
+            @RequestParam("class_name") String class_name, @RequestParam("method_name") String method_name,
+            @RequestParam("params") String params) {
+        return TestServices.singleTest(FileConfig.ClassPath + class_name+"."+class_name,
+                method_name,params);
+    }
 }

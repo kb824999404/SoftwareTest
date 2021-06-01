@@ -875,7 +875,11 @@
                 doc.autoTable({
                     startY: 60,
                     body: this.tableData ,
-                    columns: head
+                    columns: head,
+                    styles: {
+                        font: 'SourceHanSans-Normal',
+                        textColor: [0, 0, 0],
+                    },
                 });
                 doc.save("report.pdf");
             }
