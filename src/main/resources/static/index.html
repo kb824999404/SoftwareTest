@@ -587,10 +587,14 @@
     <el-dialog
             title="Choose one uploaded project"
             :visible.sync="aboutVisible"
-            width="50%"
+            width="55%"
             center>
         <div>
             <el-table
+                    v-loading="pLoading"
+                    element-loading-text="checking project......"
+                    element-loading-spinner="el-icon-loading"
+                    element-loading-background="rgba(0, 0, 0, 1)"
                     ref="singleTable"
                     :data="projectData"
                     highlight-current-row
@@ -619,13 +623,13 @@
                         <el-button
                                 size="mini"
                                 type="danger"
-                                @click="dlPVisible = true">delete</el-button>
+                                @click="dlPVisible = true">Delete</el-button>
                     </template>
                 </el-table-column>
             </el-table>
         </div>
         <span slot="footer" class="dialog-footer">
-            <el-button class="button1" @click="confirmProject()">confirm</el-button>
+            <el-button class="button1" @click="confirmProject()">Start Testing</el-button>
         </span>
     </el-dialog>
     <!--询问是否删除项目-->
@@ -636,8 +640,8 @@
             :before-close="handleClose">
         <span>Sure to delete this project?</span>
         <span slot="footer" class="dialog-footer">
-    <el-button @click="dlPVisible = false">cancel</el-button>
-    <el-button type="primary" @click="dlPVisible = false">confirm</el-button>
+    <el-button @click="dlPVisible = false">Cancel</el-button>
+    <el-button type="primary" @click="dlPVisible = false">Confirm</el-button>
   </span>
     </el-dialog>
 
@@ -662,6 +666,8 @@
             dogUrl:"./assets/img/svg/dog.svg",
             achiveUrl:"./assets/img/svg/Achievement.svg",
             hwDetailUrl:"",
+            //加载
+            pLoading:false,
             //步骤条切换
             stepActive:0,
             //控制子页面显隐
@@ -819,6 +825,10 @@
             },
             about(){
                 this.aboutVisible=true;
+                this.pLoading=true;
+                setTimeout(() => {
+                    this.pLoading = false;
+                }, 2000);
             },
             showWelcome(){
                 this.welcomeShow=true;
@@ -842,12 +852,21 @@
                 this.mainToWelcome()
             },
             showProjectTest(){
-                this.welcomeShow=false;
-                this.javaClassShow=false;
-                this.homeworkIsShow=false;
-                this.projectShow=true;
-                this.upShow=true;
-                this.ptShow=false;
+                const loading = this.$loading({
+                    lock: true,
+                    text: 'Launching ......',
+                    spinner: 'el-icon-loading',
+                    background: 'rgba(0, 0, 0, 1)'
+                });
+                setTimeout(() => {
+                    loading.close();
+                    this.welcomeShow=false;
+                    this.javaClassShow=false;
+                    this.homeworkIsShow=false;
+                    this.projectShow=true;
+                    this.upShow=true;
+                    this.ptShow=false;
+                }, 2000);
             },
             //期末项目
             confirmProject(){
