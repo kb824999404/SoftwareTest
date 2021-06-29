@@ -31,3 +31,24 @@ build/
 
 ### VS Code ###
 .vscode/
+out/test/softwaretest/com/tongji/softwaretest/SoftwaretestApplicationTests.class
+out/production/softwaretest/application.properties
+out/production/softwaretest/application.yml
+out/production/softwaretest/com/tongji/softwaretest/Config/FileConfig.class
+out/production/softwaretest/com/tongji/softwaretest/Controller/WebController.class
+out/production/softwaretest/com/tongji/softwaretest/Entity/ClassInfo.class
+out/production/softwaretest/com/tongji/softwaretest/Entity/TestResult.class
+out/production/softwaretest/com/tongji/softwaretest/SoftwaretestApplication.class
+out/production/softwaretest/com/tongji/softwaretest/Tool/TestServices.class
+out/production/softwaretest/com/tongji/softwaretest/Tool/Utils$1.class
+out/production/softwaretest/com/tongji/softwaretest/Tool/Utils.class
+out/production/softwaretest/static/assets/img/about.png
+out/production/softwaretest/static/assets/img/favicon.png
+out/production/softwaretest/static/assets/img/softwaretest.png
+out/production/softwaretest/static/assets/img/svg/404.svg
+out/production/softwaretest/static/assets/img/svg/Deadline.svg
+out/production/softwaretest/static/assets/img/svg/Hello.svg
+out/production/softwaretest/static/assets/img/svg/Search.svg
+out/production/softwaretest/static/assets/img/svg/Settings.svg
+out/production/softwaretest/static/assets/img/tip.png
+out/production/softwaretest/static/index.html
