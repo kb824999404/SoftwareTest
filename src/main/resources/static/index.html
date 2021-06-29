@@ -143,9 +143,35 @@
                 </el-row>
             </el-main>
         </div>
-        <!--作品说明页-->
+        <!--作页说明页-->
         <div id="homeworkDes" v-show="homeworkIsShow">
-
+            <el-card class="box-card" style="height: 100%;margin-top: 2vh">
+                <el-row>
+                    <el-col :span="6">
+                        <p style="color: rgb(178,197,216)">
+                            Please select the question you want to view
+                        </p>
+                    </el-col>
+                    <el-col :span="18">
+                        <el-cascader
+                                v-model="selectedHw"
+                                @change="handleHwChange()"
+                                style="width: 25vw"
+                                :options="options"
+                                :show-all-levels="false"
+                                filterable
+                                clearable></el-cascader>
+                    </el-col>
+                </el-row>
+                <el-image
+                        :src="hwDetailUrl"
+                        style="width: 80vw;"
+                >
+                    <div slot="error" class="image-slot">
+                        <i class="el-icon-picture-outline"></i>
+                    </div>
+                </el-image>
+            </el-card>
         </div>
         <!--类测试页-->
         <div id="javaClassTest" v-show="javaClassShow">
@@ -508,7 +534,7 @@
         </div>
         <!--期末项目页-->
         <div id="projectTest" v-show="projectShow">
-            
+
         </div>
     </el-container>
     <el-dialog
@@ -558,6 +584,7 @@
             uploadUrl:"./assets/img/svg/Search.svg",
             resUrl:"./assets/img/svg/Deadline.svg",
             achiveUrl:"./assets/img/svg/Achievement.svg",
+            hwDetailUrl:"",
             //步骤条切换
             stepActive:0,
             //控制子页面显隐
@@ -589,6 +616,62 @@
                 {label: 'result', width: '', prop: 'result'}
             ],
             fileList: [],
+            //作业列表
+            options: [
+                {
+                    value: 'discuss',
+                    label: '讨论题',
+                    children: [{
+                            value: '2',
+                            label: '2.销售管理系统问题'
+                        }, {
+                            value: '4',
+                            label: '4.电商平台系统测试边界值问题'
+                        }, {
+                            value: '5',
+                            label: '5.项目部署测试'
+                        }, {
+                            value: '7',
+                            label: '7.C/S系统问题'
+                        },{
+                            value: '9',
+                            label: '9.ATM系统问题'
+                        },{
+                            value: '10',
+                            label: '10.ERP系统场景问题'
+                        },{
+                            value: '11',
+                            label: '11.Web系统正交实验法'
+                        },{
+                            value: '12',
+                            label: '12.构建程序图'
+                        },{
+                            value: '13',
+                            label: '13.销售系统问题'
+                        }
+                        ]
+                },
+                {
+                    value: 'code',
+                    label: '代码设计题',
+                    children: [{
+                        value: '1',
+                        label: '1.判断三角形类型问题'
+                    }, {
+                        value: '3',
+                        label: '3.电脑销售系统问题'
+                    },{
+                        value: '6',
+                        label: '6.电信收费问题系统'
+                    },{
+                        value: '8',
+                        label: '8.万年历问题'
+                    }
+                    ]
+                }
+            ],
+            //被选中的作业
+            selectedHw:"",
             // Java类
             JavaClasses : [],
             classMethods : [],
@@ -752,6 +835,51 @@
                 //失败的测试结果高亮
                 if(this.tableData[rowIndex].result == "false"){
                     return 'warning-row';
+                }
+            },
+            //作业显示
+            handleHwChange(){
+                let selected = this.selectedHw['1'];
+                switch (selected) {
+                    case '1':
+                        this.hwDetailUrl="./assets/img/hw/1.png";
+                        break;
+                    case '2':
+                        this.hwDetailUrl="./assets/img/hw/2.png";
+                        break;
+                    case '3':
+                        this.hwDetailUrl="./assets/img/hw/3.png";
+                        break;
+                    case '4':
+                        this.hwDetailUrl="./assets/img/hw/4.png";
+                        break;
+                    case '5':
+                        this.hwDetailUrl="./assets/img/hw/5.png";
+                        break;
+                    case '6':
+                        this.hwDetailUrl="./assets/img/hw/6.png";
+                        break;
+                    case '7':
+                        this.hwDetailUrl="./assets/img/hw/7.png";
+                        break;
+                    case '8':
+                        this.hwDetailUrl="./assets/img/hw/8.png";
+                        break;
+                    case '9':
+                        this.hwDetailUrl="./assets/img/hw/9.png";
+                        break;
+                    case '10':
+                        this.hwDetailUrl="./assets/img/hw/10.png";
+                        break;
+                    case '11':
+                        this.hwDetailUrl="./assets/img/hw/11.png";
+                        break;
+                    case '12':
+                        this.hwDetailUrl="./assets/img/hw/12.png";
+                        break;
+                    case '13':
+                        this.hwDetailUrl="./assets/img/hw/13.png";
+                        break;
                 }
             },
             /*获取table结果数据*/
