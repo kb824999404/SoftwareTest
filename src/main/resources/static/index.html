@@ -80,389 +80,436 @@
     <el-container>
         <el-header style="height: 5vh">
             <el-row>
-                <el-col :span="19">
-                    <a href="index.html">
-                        <el-image
-                                style="margin-top:10px;width: 350px;height: 31px"
-                                :src="logoUrl"
-                        >
-                        </el-image>
-                    </a>
-                </el-col>
-                <el-col :span="5" style="float: right">
-                    <!--todo：使用指南-->
+                <el-col :span="15">
                     <el-image
-                            style="margin-top:10px;width: 140px;height: 31px"
-                            :src="guideUrl"
-                            @click="tip()"
+                            style="margin-top:10px;width: 170px;height: 30px"
+                            :src="logoUrl"
+                            @click="showWelcome()"
                     >
                     </el-image>
-                    <!--todo:关于我们-->
+                </el-col>
+                <el-col :span="9" style="float: right">
                     <el-image
-                            style="margin-top:10px;width: 160px;height: 31px"
-                            :src="aboutUrl"
-                            @click="about()"
+                            style="margin-top:10px;width: 140px;height: 30px"
+                            :src="homeworkUrl"
+                            @click="showHomeWork()"
+                    >
+                    </el-image>
+                    <el-image
+                            style="margin-top:10px;width: 180px;height: 30px"
+                            :src="javaClassUrl"
+                            @click="showJavaClass()"
+                    >
+                    </el-image>
+                    <el-image
+                            style="margin-top:10px;width: 160px;height: 30px"
+                            :src="projectUrl"
+                            @click="showProjectTest()"
                     >
                     </el-image>
                 </el-col>
             </el-row>
         </el-header>
-        <el-main style="height: 85vh">
-            <!--欢迎页面-->
-            <el-card class="box-card" style="height: 98%;text-align: center" v-show="mainIsShow">
-                <el-row style="margin-top:8vh;margin-left: 15vw;margin-right: 15vw">
+        <!--欢迎页-->
+        <div id="welcomePage" v-show="welcomeShow">
+            <el-main style="height: 92vh">
+                <el-row style="margin-top:8vh;margin-left:8vw;margin-right: 15vw">
                     <el-col :span="10">
                         <!--todo：图片样式待改-->
                         <el-image
-                                style="margin-top:-2vh;width: 450px;height: 450px"
+                                style="margin-top:-2vh;width: 500px;height: 500px"
                                 :src="helloUrl"
                         >
                         </el-image>
                     </el-col>
-                    <el-col :span="14">
-                        <h2 style="font-size: 30px">
-                            Welcome to
-                        </h2>
-                        <h1 style="color:rgb(5,67,134);font-size: 42px">Software Test Tool</h1>
-                        <p style="color: rgb(178,197,216);font-size:16px">
-                            Fill basic information,
-                            <br/>
-                            Choose Java Classes and test cases,
-                            <br/>
-                            then get results.
-                        </p>
-                        <el-button class="button1" type="primary" round @click="mainTo1()" style="margin-top: 5vh">Get started<i class="el-icon-right el-icon--right"></i></el-button>
-                    </el-col>
-                </el-row>
-            </el-card>
-            <!--步骤1：选择待测信息-->
-            <transition name="el-zoom-in-center">
-                <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow1">
-                <el-row style="margin-left: 10vw;margin-right: 10vw">
-                    <el-col :span="12">
-                        <el-card shadow="hover" style="margin-top: 2vh">
-                            <template #header>
-                                <div class="card-header">
-                                    <h2>Step1</h2>
-                                    <p style="color: rgb(178,197,216);font-size:16px">Fill in the information about this test</p>
-                                </div>
-                            </template>
-                            <el-form ref="form"  label-width="80px">
-                                <el-form-item label="测试人员">
-                                    <el-input v-model="testName"></el-input>
-                                </el-form-item>
-                                <el-form-item label="测试地点" style="width: 100%">
-                                    <el-radio-group v-model="testLocation">
-                                        <el-radio label="同济大学嘉定校区"></el-radio>
-                                        <el-radio label="同济大学四平校区"></el-radio>
-                                        <el-radio label="其他地点"></el-radio>
-                                    </el-radio-group>
-                                </el-form-item>
-                                <el-form-item label="测试时间">
-                                    <el-date-picker
-                                            v-model="testTime"
-                                            type="datetime"
-                                            placeholder="请选择测试时间"
-                                            style="width: 100%"
-                                            align="right">
-                                    </el-date-picker>
-                                </el-form-item>
-                                <el-form-item label="测试版本">
-                                    <el-select v-model="testVer" placeholder="请选择测试版本" style="width: 100%">
-                                        <el-option label="beta.1.0" value="beta.1.0"></el-option>
-                                        <el-option label="beta.1.1" value="beta.1.1"></el-option>
-                                        <el-option label="beta.2.0" value="beta.2.0"></el-option>
-                                    </el-select>
-                                </el-form-item>
-                            </el-form>
-                        </el-card>
-                    </el-col>
-                    <el-col :span="12">
+                    <el-col :span="14" style="text-align: center">
                         <el-image
-                                style="width: 410px;height: 410px"
-                                :src="formUrl"
+                                style="margin-top:10px;width: 600px;height: 240px"
+                                :src="welcomeUrl"
                         >
                         </el-image>
-                        <el-row type="flex" justify="center">
-                            <el-col :span="24">
-                                <el-button class="button1" type="primary" round @click="mainToWelcome()"
-                                           style="width: 100px;">
-                                    <i class="el-icon-back el-icon--back"></i>
-                                    Back
-                                </el-button>
-                                <el-button class="button2" type="primary" round @click="mainTo2()"
-                                           style="width: 100px;">
-                                    Next
-                                    <i class="el-icon-right el-icon--right"></i>
-                                </el-button>
+                        <el-row :gutter="10">
+                            <el-col :span="8">
+                                <el-button round @click="showHomeWork()" style="width: 100%;height: 150px;font-size: 20px">Homework<br/>Description</el-button>
+                            </el-col>
+                            <el-col :span="8">
+                                <el-button round @click="showJavaClass()" style="width: 100%;height: 150px;font-size: 20px">JavaClassTestTool</el-button>
+                            </el-col>
+                            <el-col :span="8">
+                                <el-button round @click="showProjectTest()" style="width: 100%;height: 150px;font-size: 20px">ProjectTestTool</el-button>
                             </el-col>
                         </el-row>
                     </el-col>
                 </el-row>
-            </el-card>
-            </transition>
-            <!--步骤2:上传类-->
-            <transition name="el-zoom-in-center">
-                <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow2">
-                <el-row type="flex" justify="center" style="margin-left: 10vw;margin-right: 10vw">
-                    <el-col :span="12">
-                        <el-image
-                                style="width: 400px;height: 400px"
-                                :src="uploadUrl"
-                        >
-                        </el-image>
-                        <!-- 换页按钮 -->
-                        <el-row type="flex" justify="center">
-                            <el-col :span="24">
-                                <el-button class="button1" type="primary" round @click="mainTo1()"
-                                           style="width: 100px;">
-                                    <i class="el-icon-back el-icon--back"></i>
-                                    Back
-                                </el-button>
-                                <el-button class="button2" type="primary" round @click="mainTo3()"
-                                           style="width: 100px;">
-                                    Next
-                                    <i class="el-icon-right el-icon--right"></i>
-                                </el-button>
-                            </el-col>
-                        </el-row>
-                    </el-col>
-                    <el-col :span="12">
-                        <el-card shadow="hover" style="margin-top: 2vh">
-                            <template #header>
-                                <div class="card-header">
-                                    <h2>Step2</h2>
-                                    <p style="color: rgb(178,197,216);font-size:16px">Select a Java Classes file and upload.</p>
-                                </div>
-                            </template>
-                            <!-- 上传文件 -->
-                            <el-upload
-                                    ref="upload"
-                                    action="api/uploadClass"
-                                    :on-remove="handleRemove"
-                                    :file-list="fileList"
-                                    :auto-upload="false"
-                                    :on-success="onUploadSuccess"
-                                    :multiple="true"
-                                    :limit="5"
-                                    style="height: 35vh"
+            </el-main>
+        </div>
+        <!--作品说明页-->
+        <div id="homeworkDes" v-show="homeworkIsShow">
+
+        </div>
+        <!--类测试页-->
+        <div id="javaClassTest" v-show="javaClassShow">
+            <el-main style="height: 85vh">
+                <!--欢迎页面-->
+                <el-card class="box-card" style="height: 98%;text-align: center" v-show="mainIsShow">
+                    <el-row style="margin-top:8vh;margin-left: 15vw;margin-right: 15vw">
+                        <el-col :span="10">
+                            <!--todo：图片样式待改-->
+                            <el-image
+                                    style="margin-top:-2vh;width: 450px;height: 450px"
+                                    :src="achiveUrl"
                             >
-                                <el-button class="button1" slot="trigger" type="primary"
-                                           style="width: 130px;" round>
-                                    Select File
-                                </el-button>
-                                <el-button class="button2" round  type="primary"
-                                           style="width: 130px;" @click="submitUpload">
-                                    Upload Class
-                                </el-button>
-                            </el-upload>
-                        </el-card>
-                    </el-col>
-                </el-row>
-            </el-card>
-            </transition>
-            <!--步骤3：-->
-            <transition name="el-zoom-in-center">
-                <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow3">
-                <h2>Step3</h2>
-                <el-row type="flex" justify="center">
-                    <el-col :span="12" style="height: 50vh;">
-                        <p style="color: rgb(178,197,216)">
-                            Click to select a Java Classes.
-                        </p>
-                        <!-- Java类表格 -->
-                        <el-table
-                            style="width: 500px; margin: auto;"
-                            ref="classTable"
-                            height="250px"
-                            :data="JavaClasses">
-                            <el-table-column
-                                property="class_name"
-                                label="Class Name"
-                                align="center"
-                                width="300px">
-                            </el-table-column>
-                            <el-table-column
-                                label="Operation"
-                                align="center"
-                                width="200px">
-                                <template slot-scope="scope">
-                                    <el-button class="button1"
-                                    size="mini" round
-                                    @click="onClassSelected(scope.$index, scope.row)">Select</el-button>
-                                    <el-button class="button2"
-                                      size="mini" round
-                                      @click="onClassDelete(scope.$index, scope.row)">Delete</el-button>
-                                </template>
-                        </el-table-column>
-                      </el-table>
-                    </el-col>
-                    <el-col :span="12">
-                        <p style="color: rgb(178,197,216)">
-                            Selected Class：{{selectedClassName}}
-                        </p>
-                        <!-- 类方法表格 -->
-                        <el-table
-                            style="width: 550px; margin: auto;"
-                            ref="methodTable"
-                            height="250px"
-                            :data="classMethods"
-                            highlight-current-row>
-                        <el-table-column
-                            property="method_name"
-                            label="Method Name"
-                            align="center"
-                            width="130px">
-                        </el-table-column>
-                        <el-table-column
-                            property="test_case"
-                            label="Test Case"
-                            align="center"
-                            width="170px">
-                        </el-table-column>
-                        <el-table-column
-                            label="Operation"
-                            align="center"
-                            width="250px">
-                            <template slot-scope="scope">
-                                <el-button class="button2"
-                                    size="mini" round @click="onMethodSelected(scope.$index, scope.row)">
-                                    Upload</el-button>
-                                <el-button class="button1"
-                                    size="mini" round @click="onMethodTest(scope.$index,scope.row)">
-                                    Test</el-button>
-                                <el-button class="button2"
-                                    size="mini" round @click="onTestCaseDelete(scope.$index, scope.row)">
-                                    Delete</el-button>
-                            </template>
-                    </el-table-column>
-                    </el-table>
-                    <el-dialog title="Upload Test Case" :visible.sync="dialogTestCaseVisible">
-                        <el-upload
-                                class="upload-demo"
-                                :drag="true"
-                                action="api/uploadTestCase"
-                                :multiple="false"
-                                :show-file-list="true"
-                                accept="csv"
-                                :data="{'class_name':selectedClassName,'method_name':selectedMethod}"
-                                :on-success="onUploadTestCaseSuccess"
-                                :on-remove="handleRemoveFile"
-                                :limit="1"
-                        >
-                            <i class="el-icon-upload"></i>
-                            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                            <div class="el-upload__tip" slot="tip">一次只能上传一个csv文件</div>
-                        </el-upload>
-                      </el-dialog>
-                    </el-col>
-                  </el-row>
-                  <!-- 换页按钮 -->
-                  <el-row type="flex" justify="center" style="margin-top: 5vh;">
-                      <el-col :span="24">
-                            <el-button class="button1" type="primary" round @click="mainTo2()" 
-                                style="width: 100px;">
-                                <i class="el-icon-back el-icon--back"></i>
-                                Back
-                            </el-button>
-                            <el-button class="button2" type="primary" round @click="mainTo4()" 
-                                style="width: 100px;">
-                                Next
-                            <i class="el-icon-right el-icon--right"></i>
-                            </el-button>
-                        </el-button>
-                      </el-col>
-                  </el-row>
-            </el-card>
-            </transition>
-            <!--步骤4选择待测方法-->
-            <transition name="el-zoom-in-center">
-                <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow4">
-                <h2>Step4</h2>
-                <el-row type="flex" justify="center">
-                    <el-col :span="24" style=" height: 50vh;">
-                        <div id="table">
-                            <template>
+                            </el-image>
+                        </el-col>
+                        <el-col :span="14">
+                            <h2 style="font-size: 30px">
+                                Welcome to
+                            </h2>
+                            <h1 style="color:rgb(5,67,134);font-size: 42px">Java Class Test Tool</h1>
+                            <p style="color: rgb(178,197,216);font-size:16px">
+                                Fill basic information,
+                                <br/>
+                                Choose Java Classes and test cases,
+                                <br/>
+                                then get results.
+                            </p>
+                            <el-button class="button1" type="primary" round @click="mainTo1()" style="margin-top: 5vh">Get started<i class="el-icon-right el-icon--right"></i></el-button>
+                        </el-col>
+                    </el-row>
+                </el-card>
+                <!--步骤1：选择待测信息-->
+                <transition name="el-zoom-in-center">
+                    <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow1">
+                        <el-row style="margin-left: 10vw;margin-right: 10vw">
+                            <el-col :span="12">
+                                <el-card shadow="hover" style="margin-top: 2vh">
+                                    <template #header>
+                                        <div class="card-header">
+                                            <h2>Step1</h2>
+                                            <p style="color: rgb(178,197,216);font-size:16px">Fill in the information about this test</p>
+                                        </div>
+                                    </template>
+                                    <el-form ref="form"  label-width="80px">
+                                        <el-form-item label="测试人员">
+                                            <el-input v-model="testName"></el-input>
+                                        </el-form-item>
+                                        <el-form-item label="测试地点" style="width: 100%">
+                                            <el-radio-group v-model="testLocation">
+                                                <el-radio label="同济大学嘉定校区"></el-radio>
+                                                <el-radio label="同济大学四平校区"></el-radio>
+                                                <el-radio label="其他地点"></el-radio>
+                                            </el-radio-group>
+                                        </el-form-item>
+                                        <el-form-item label="测试时间">
+                                            <el-date-picker
+                                                    v-model="testTime"
+                                                    type="datetime"
+                                                    placeholder="请选择测试时间"
+                                                    style="width: 100%"
+                                                    align="right">
+                                            </el-date-picker>
+                                        </el-form-item>
+                                        <el-form-item label="测试版本">
+                                            <el-select v-model="testVer" placeholder="请选择测试版本" style="width: 100%">
+                                                <el-option label="beta.1.0" value="beta.1.0"></el-option>
+                                                <el-option label="beta.1.1" value="beta.1.1"></el-option>
+                                                <el-option label="beta.2.0" value="beta.2.0"></el-option>
+                                            </el-select>
+                                        </el-form-item>
+                                    </el-form>
+                                </el-card>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-image
+                                        style="width: 410px;height: 410px"
+                                        :src="formUrl"
+                                >
+                                </el-image>
+                                <el-row type="flex" justify="center">
+                                    <el-col :span="24">
+                                        <el-button class="button1" type="primary" round @click="mainToWelcome()"
+                                                   style="width: 100px;">
+                                            <i class="el-icon-back el-icon--back"></i>
+                                            Back
+                                        </el-button>
+                                        <el-button class="button2" type="primary" round @click="mainTo2()"
+                                                   style="width: 100px;">
+                                            Next
+                                            <i class="el-icon-right el-icon--right"></i>
+                                        </el-button>
+                                    </el-col>
+                                </el-row>
+                            </el-col>
+                        </el-row>
+                    </el-card>
+                </transition>
+                <!--步骤2:上传类-->
+                <transition name="el-zoom-in-center">
+                    <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow2">
+                        <el-row type="flex" justify="center" style="margin-left: 10vw;margin-right: 10vw">
+                            <el-col :span="12">
+                                <el-image
+                                        style="width: 400px;height: 400px"
+                                        :src="uploadUrl"
+                                >
+                                </el-image>
+                                <!-- 换页按钮 -->
+                                <el-row type="flex" justify="center">
+                                    <el-col :span="24">
+                                        <el-button class="button1" type="primary" round @click="mainTo1()"
+                                                   style="width: 100px;">
+                                            <i class="el-icon-back el-icon--back"></i>
+                                            Back
+                                        </el-button>
+                                        <el-button class="button2" type="primary" round @click="mainTo3()"
+                                                   style="width: 100px;">
+                                            Next
+                                            <i class="el-icon-right el-icon--right"></i>
+                                        </el-button>
+                                    </el-col>
+                                </el-row>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-card shadow="hover" style="margin-top: 2vh">
+                                    <template #header>
+                                        <div class="card-header">
+                                            <h2>Step2</h2>
+                                            <p style="color: rgb(178,197,216);font-size:16px">Select a Java Classes file and upload.</p>
+                                        </div>
+                                    </template>
+                                    <!-- 上传文件 -->
+                                    <el-upload
+                                            ref="upload"
+                                            action="api/uploadClass"
+                                            :on-remove="handleRemove"
+                                            :file-list="fileList"
+                                            :auto-upload="false"
+                                            :on-success="onUploadSuccess"
+                                            :multiple="true"
+                                            :limit="5"
+                                            style="height: 35vh"
+                                    >
+                                        <el-button class="button1" slot="trigger" type="primary"
+                                                   style="width: 130px;" round>
+                                            Select File
+                                        </el-button>
+                                        <el-button class="button2" round  type="primary"
+                                                   style="width: 130px;" @click="submitUpload">
+                                            Upload Class
+                                        </el-button>
+                                    </el-upload>
+                                </el-card>
+                            </el-col>
+                        </el-row>
+                    </el-card>
+                </transition>
+                <!--步骤3：-->
+                <transition name="el-zoom-in-center">
+                    <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow3">
+                        <h2>Step3</h2>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="12" style="height: 50vh;">
+                                <p style="color: rgb(178,197,216)">
+                                    Click to select a Java Classes.
+                                </p>
+                                <!-- Java类表格 -->
                                 <el-table
-                                        :data="tableData"
-                                        style="width: 90%;margin: auto;margin-top: 30px;"
-                                        height="46vh"
-                                        :row-class-name="tableRowClassName">
+                                        style="width: 500px; margin: auto;"
+                                        ref="classTable"
+                                        height="250px"
+                                        :data="JavaClasses">
                                     <el-table-column
-                                            v-for="(item, index) in tableLabel"
-                                            :key="index"
-                                            :prop="item.prop"
-                                            :width="item.width"
-                                            :label="item.label">
+                                            property="class_name"
+                                            label="Class Name"
+                                            align="center"
+                                            width="300px">
+                                    </el-table-column>
+                                    <el-table-column
+                                            label="Operation"
+                                            align="center"
+                                            width="200px">
+                                        <template slot-scope="scope">
+                                            <el-button class="button1"
+                                                       size="mini" round
+                                                       @click="onClassSelected(scope.$index, scope.row)">Select</el-button>
+                                            <el-button class="button2"
+                                                       size="mini" round
+                                                       @click="onClassDelete(scope.$index, scope.row)">Delete</el-button>
+                                        </template>
                                     </el-table-column>
                                 </el-table>
-                            </template>
-                        </div>
-                    </el-col>
-                  </el-row>
-                  <!-- 换页按钮 -->
-                  <el-row type="flex" justify="center" style="margin-top: 5vh;">
-                      <el-col :span="24">
-                        <el-button class="button1" type="primary" round @click="mainTo3()" 
-                            style="width: 100px;">
-                            <i class="el-icon-back el-icon--back"></i>
-                            Back
-                        </el-button>
-                        <el-button class="button2" type="primary" round @click="mainTo5()" 
-                            style="width: 100px;">
-                            Next
-                        <i class="el-icon-right el-icon--right"></i>
-                        </el-button>
-                      </el-col>
-                  </el-row>
-            </el-card>
-            </transition>
-            <!--步骤5展示表格、扇形图-->
-            <transition name="el-zoom-in-center">
-                <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow5">
-                <h2>Step5</h2>
-                <el-row type="flex" justify="center" style="margin-left: 15vw;margin-right: 15vw">
-                    <el-col :span="12" style="height: 50vh;">
-                        <el-image
-                                style="width: 400px;height: 400px"
-                                :src="resUrl"
-                        >
-                        </el-image>
-                    </el-col>
-                    <el-col :span="12" style="height: 50vh;">
-                        <el-button class="button2" type="primary" size="mini" round
-                        style="margin: 10px 0;" @click="saveReport">导出测试报告</el-button>
-                        <div id="echart-canvas" style="width: 500px;height:350px;margin: auto;"></div>
-                    </el-col>
-                  </el-row>
-                  <!-- 换页按钮 -->
-                  <el-row type="flex" justify="center" style="margin-top: 5vh;">
-                      <el-col :span="24">
-                            <el-button class="button1" type="primary" round @click="mainTo4()" 
-                                style="width: 100px;">
-                                <i class="el-icon-back el-icon--back"></i>
-                                Back
-                            </el-button>
-                            <el-button class="button2" type="primary" round @click="reload()">
-                                <i class="el-icon-refresh-right el-icon--right"></i>
-                                ReTest
-                            </el-button>
-                      </el-col>
-                  </el-row>
-            </el-card>
-            </transition>
-        </el-main>
-        <el-footer style="height: 5vh">
-            <!-- 步骤条 -->
-            <el-steps :active="stepActive" simple>
-                <el-step title="welcome" icon="el-icon-s-home"></el-step>
-                <el-step title="step1" icon="el-icon-setting"></el-step>
-                <el-step title="step2" icon="el-icon-upload"></el-step>
-                <el-step title="step3" icon="el-icon-more-outline"></el-step>
-                <el-step title="step4" icon="el-icon-data-analysis"></el-step>
-                <el-step title="step5" icon="el-icon-s-data"></el-step>
-            </el-steps>
-        </el-footer>
+                            </el-col>
+                            <el-col :span="12">
+                                <p style="color: rgb(178,197,216)">
+                                    Selected Class：{{selectedClassName}}
+                                </p>
+                                <!-- 类方法表格 -->
+                                <el-table
+                                        style="width: 550px; margin: auto;"
+                                        ref="methodTable"
+                                        height="250px"
+                                        :data="classMethods"
+                                        highlight-current-row>
+                                    <el-table-column
+                                            property="method_name"
+                                            label="Method Name"
+                                            align="center"
+                                            width="130px">
+                                    </el-table-column>
+                                    <el-table-column
+                                            property="test_case"
+                                            label="Test Case"
+                                            align="center"
+                                            width="170px">
+                                    </el-table-column>
+                                    <el-table-column
+                                            label="Operation"
+                                            align="center"
+                                            width="250px">
+                                        <template slot-scope="scope">
+                                            <el-button class="button2"
+                                                       size="mini" round @click="onMethodSelected(scope.$index, scope.row)">
+                                                Upload</el-button>
+                                            <el-button class="button1"
+                                                       size="mini" round @click="onMethodTest(scope.$index,scope.row)">
+                                                Test</el-button>
+                                            <el-button class="button2"
+                                                       size="mini" round @click="onTestCaseDelete(scope.$index, scope.row)">
+                                                Delete</el-button>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                                <el-dialog title="Upload Test Case" :visible.sync="dialogTestCaseVisible">
+                                    <el-upload
+                                            class="upload-demo"
+                                            :drag="true"
+                                            action="api/uploadTestCase"
+                                            :multiple="false"
+                                            :show-file-list="true"
+                                            accept="csv"
+                                            :data="{'class_name':selectedClassName,'method_name':selectedMethod}"
+                                            :on-success="onUploadTestCaseSuccess"
+                                            :on-remove="handleRemoveFile"
+                                            :limit="1"
+                                    >
+                                        <i class="el-icon-upload"></i>
+                                        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                                        <div class="el-upload__tip" slot="tip">一次只能上传一个csv文件</div>
+                                    </el-upload>
+                                </el-dialog>
+                            </el-col>
+                        </el-row>
+                        <!-- 换页按钮 -->
+                        <el-row type="flex" justify="center" style="margin-top: 5vh;">
+                            <el-col :span="24">
+                                <el-button class="button1" type="primary" round @click="mainTo2()"
+                                           style="width: 100px;">
+                                    <i class="el-icon-back el-icon--back"></i>
+                                    Back
+                                </el-button>
+                                <el-button class="button2" type="primary" round @click="mainTo4()"
+                                           style="width: 100px;">
+                                    Next
+                                    <i class="el-icon-right el-icon--right"></i>
+                                </el-button>
+                                </el-button>
+                            </el-col>
+                        </el-row>
+                    </el-card>
+                </transition>
+                <!--步骤4选择待测方法-->
+                <transition name="el-zoom-in-center">
+                    <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow4">
+                        <h2>Step4</h2>
+                        <el-row type="flex" justify="center">
+                            <el-col :span="24" style=" height: 50vh;">
+                                <div id="table">
+                                    <template>
+                                        <el-table
+                                                :data="tableData"
+                                                style="width: 90%;margin: auto;margin-top: 30px;"
+                                                height="46vh"
+                                                :row-class-name="tableRowClassName">
+                                            <el-table-column
+                                                    v-for="(item, index) in tableLabel"
+                                                    :key="index"
+                                                    :prop="item.prop"
+                                                    :width="item.width"
+                                                    :label="item.label">
+                                            </el-table-column>
+                                        </el-table>
+                                    </template>
+                                </div>
+                            </el-col>
+                        </el-row>
+                        <!-- 换页按钮 -->
+                        <el-row type="flex" justify="center" style="margin-top: 5vh;">
+                            <el-col :span="24">
+                                <el-button class="button1" type="primary" round @click="mainTo3()"
+                                           style="width: 100px;">
+                                    <i class="el-icon-back el-icon--back"></i>
+                                    Back
+                                </el-button>
+                                <el-button class="button2" type="primary" round @click="mainTo5()"
+                                           style="width: 100px;">
+                                    Next
+                                    <i class="el-icon-right el-icon--right"></i>
+                                </el-button>
+                            </el-col>
+                        </el-row>
+                    </el-card>
+                </transition>
+                <!--步骤5展示表格、扇形图-->
+                <transition name="el-zoom-in-center">
+                    <el-card class="box-card" style="height: 98%;text-align: center" v-show="isShow5">
+                        <h2>Step5</h2>
+                        <el-row type="flex" justify="center" style="margin-left: 15vw;margin-right: 15vw">
+                            <el-col :span="12" style="height: 50vh;">
+                                <el-image
+                                        style="width: 400px;height: 400px"
+                                        :src="resUrl"
+                                >
+                                </el-image>
+                            </el-col>
+                            <el-col :span="12" style="height: 50vh;">
+                                <el-button class="button2" type="primary" size="mini" round
+                                           style="margin: 10px 0;" @click="saveReport">导出测试报告</el-button>
+                                <div id="echart-canvas" style="width: 500px;height:350px;margin: auto;"></div>
+                            </el-col>
+                        </el-row>
+                        <!-- 换页按钮 -->
+                        <el-row type="flex" justify="center" style="margin-top: 5vh;">
+                            <el-col :span="24">
+                                <el-button class="button1" type="primary" round @click="mainTo4()"
+                                           style="width: 100px;">
+                                    <i class="el-icon-back el-icon--back"></i>
+                                    Back
+                                </el-button>
+                                <el-button class="button2" type="primary" round @click="reload()">
+                                    <i class="el-icon-refresh-right el-icon--right"></i>
+                                    ReTest
+                                </el-button>
+                            </el-col>
+                        </el-row>
+                    </el-card>
+                </transition>
+            </el-main>
+            <el-footer style="height: 5vh">
+                <!-- 步骤条 -->
+                <el-steps :active="stepActive" simple>
+                    <el-step title="welcome" icon="el-icon-s-home"></el-step>
+                    <el-step title="step1" icon="el-icon-setting"></el-step>
+                    <el-step title="step2" icon="el-icon-upload"></el-step>
+                    <el-step title="step3" icon="el-icon-more-outline"></el-step>
+                    <el-step title="step4" icon="el-icon-data-analysis"></el-step>
+                    <el-step title="step5" icon="el-icon-s-data"></el-step>
+                </el-steps>
+            </el-footer>
+        </div>
+        <!--期末项目页-->
+        <div id="projectTest" v-show="projectShow">
+            
+        </div>
     </el-container>
     <el-dialog
             title="Guide"
@@ -498,17 +545,27 @@
     var app = new Vue({
         el: '#app',
         data: {
+            //图片
             helloUrl:"./assets/img/svg/Hello.svg",
-            logoUrl:"./assets/img/softwaretest.png",
+            logoUrl:"./assets/img/softwareTest.png",
             guideUrl:"./assets/img/tip.png",
             aboutUrl:"./assets/img/about.png",
+            homeworkUrl:"./assets/img/homework.png",
+            javaClassUrl:"./assets/img/javaClassTest.png",
+            projectUrl:"./assets/img/projectTest.png",
+            welcomeUrl:"./assets/img/welcomeTest.png",
             formUrl:"./assets/img/svg/Settings.svg",
             uploadUrl:"./assets/img/svg/Search.svg",
             resUrl:"./assets/img/svg/Deadline.svg",
+            achiveUrl:"./assets/img/svg/Achievement.svg",
             //步骤条切换
             stepActive:0,
             //控制子页面显隐
             mainIsShow:true,
+            welcomeShow:true,
+            javaClassShow:false,
+            homeworkIsShow:false,
+            projectShow:false,
             isShow1:false,
             isShow2:false,
             isShow3:false,
@@ -593,6 +650,33 @@
             },
             about(){
                 this.aboutVisible=true;
+            },
+            showWelcome(){
+                this.welcomeShow=true;
+                this.javaClassShow=false;
+                this.homeworkIsShow=false;
+                this.projectShow=false;
+            },
+            showHomeWork(){
+                this.welcomeShow=false;
+                this.javaClassShow=false;
+                this.homeworkIsShow=true;
+                this.projectShow=false;
+            },
+            showJavaClass(){
+                //显隐切换
+                this.welcomeShow=false;
+                this.javaClassShow=true;
+                this.homeworkIsShow=false;
+                this.projectShow=false;
+                //步骤条切换
+                this.mainToWelcome()
+            },
+            showProjectTest(){
+                this.welcomeShow=false;
+                this.javaClassShow=false;
+                this.homeworkIsShow=false;
+                this.projectShow=true;
             },
             mainToWelcome(){
                 //显隐切换
