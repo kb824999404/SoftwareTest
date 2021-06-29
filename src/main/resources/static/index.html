@@ -534,7 +534,17 @@
         </div>
         <!--期末项目页-->
         <div id="projectTest" v-show="projectShow">
-
+            <el-tabs type="border-card" style="margin-top: 2vh">
+                <el-tab-pane label="单元测试">
+                    单元测试
+                </el-tab-pane>
+                <el-tab-pane label="集成测试">
+                    集成测试
+                </el-tab-pane>
+                <el-tab-pane label="系统测试">
+                    系统测试
+                </el-tab-pane>
+            </el-tabs>
         </div>
     </el-container>
     <el-dialog
