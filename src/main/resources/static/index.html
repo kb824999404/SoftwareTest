@@ -142,7 +142,7 @@
                 </el-row>
             </el-main>
         </div>
-        <!--作页说明页-->
+        <!--作业说明页-->
         <div id="homeworkDes" v-show="homeworkIsShow">
             <el-card class="box-card" style="height: 100%;margin-top: 2vh">
                 <el-row>
@@ -551,8 +551,73 @@
             </el-card>
             <!--测试内容-->
             <el-tabs type="border-card" style="margin-top: 2vh" v-show="ptShow">
-                <el-tab-pane label="单元测试">
-                    单元测试
+                <el-tab-pane label="单元测试" >
+                    <div style="text-align: center" v-show="unitTestShow">
+                        <el-cascader
+                                v-model="unitValue"
+                                :options="unitOptions"
+                                style="width: 30vw;"
+                                placeholder="Please select class and version"></el-cascader>
+                        <el-button style="margin-left: 20px" type="primary" @click="startUnitTesting()">Start UnitTest</el-button>
+                        <el-button style="margin-left: 20px" type="primary" @click="drawChart">Show Chart</el-button>
+                        <el-button round @click="unitAddShow = true">Add Use Case</el-button>
+                        <el-button round @click="showUnitReport()">Show Report</el-button>
+                        <div style="height: 20px"></div>
+
+                        <el-table
+                                ref="table"
+                                :data="unitTableTestData"
+                                stripe
+                                style="width: 100%;
+              }"
+                                border>
+                            <el-table-column
+                                    prop="id"
+                                    label="测试用例编号"
+                                    show-overflow-tooltip>
+                            </el-table-column>
+                            <el-table-column
+                                    prop="data"
+                                    label="测试用例"
+                                    show-overflow-tooltip>
+                            </el-table-column>
+                            <el-table-column
+                                    prop="expect"
+                                    label="期望结果"
+                                    show-overflow-tooltip>
+                            </el-table-column>
+                        </el-table>
+                        <el-table
+                                ref="table"
+                                :data="unitTableData"
+                                stripe
+                                style="width: 100%"
+                                border>
+                            <el-table-column
+                                    prop="id"
+                                    label="测试用例编号"
+                                    show-overflow-tooltip>
+                            </el-table-column>
+                            <el-table-column
+                                    prop="real"
+                                    label="测试结果"
+                                    show-overflow-tooltip>
+                            </el-table-column>
+                        </el-table>
+
+
+                        <div style="height: 20px"></div>
+                        <div id="myUnitChart" style="width: 360px;height: 360px;margin: auto"></div>
+                    </div>
+                    <div v-show="unitReport">
+                        <el-row>
+                            <el-button round @click="showUnitTest()">To UnitTest</el-button>
+                        </el-row>
+                        <el-image
+                                :src="unitTestUrl"
+                        >
+                        </el-image>
+                    </div>
                 </el-tab-pane>
                 <el-tab-pane label="集成测试">
                     集成测试
@@ -644,6 +709,31 @@
     <el-button type="primary" @click="dlPVisible = false">Confirm</el-button>
   </span>
     </el-dialog>
+    <!--单元测试：添加用例-->
+    <el-dialog :visible.sync="unitAddShow" center>
+        <div>
+            <el-form ref="form" :model="form" label-width="80px">
+                <el-form-item label="参数1">
+                    <el-input v-model="form.data1"></el-input>
+                </el-form-item>
+                <el-form-item label="参数2">
+                    <el-input v-model="form.data2"></el-input>
+                </el-form-item>
+                <el-form-item label="参数3">
+                    <el-input v-model="form.data3"></el-input>
+                </el-form-item>
+                <el-form-item label="期望结果">
+                    <el-input v-model="form.data4"></el-input>
+                </el-form-item>
+            </el-form>
+
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="unitAddShow = false; ">取 消</el-button>
+                <el-button type="primary" @click="addForm()">确 认</el-button>
+            </div>
+
+        </div>
+    </el-dialog>
 
 </div>
 
@@ -652,6 +742,7 @@
         el: '#app',
         data: {
             //图片
+            URL:"http://106.14.67.53:8081/test/",
             helloUrl:"./assets/img/svg/Hello.svg",
             logoUrl:"./assets/img/softwareTest.png",
             guideUrl:"./assets/img/tip.png",
@@ -660,6 +751,7 @@
             javaClassUrl:"./assets/img/javaClassTest.png",
             projectUrl:"./assets/img/projectTest.png",
             welcomeUrl:"./assets/img/welcomeTest.png",
+            unitTestUrl:"./assets/img/test/unitTest.png",
             formUrl:"./assets/img/svg/Settings.svg",
             uploadUrl:"./assets/img/svg/Search.svg",
             resUrl:"./assets/img/svg/Deadline.svg",
@@ -777,6 +869,209 @@
                 projectName: 'iMusic',
                 projectType: 'Java/Spring Boot'
             }],
+            //单元测试
+            unitCorrectNum:0,
+            unitErrorNum:0,
+            unitAddShow:false,
+            unitTestShow:true,
+            unitReport:false,
+            unitValue:[],
+            unitOptions:[
+                {
+                    value: 'login',
+                    label: 'AccountController',
+                    children: [
+                        {
+                            value: 'bug',
+                            label: 'bug'
+                        },
+                        {
+                            value: 'correct',
+                            label: 'correct'
+                        }
+                    ]
+                },
+                {
+                    value: 'unstarMusic',
+                    label: 'MusicController',
+                    children: [
+                        {
+                            value: 'bug',
+                            label: 'bug'
+                        },
+                        {
+                            value: 'correct',
+                            label: 'correct'
+                        }
+                    ]
+                },
+                {
+                    value: 'sendMessage',
+                    label: 'MessageController',
+                    children: [
+                        {
+                            value: 'bug',
+                            label: 'bug'
+                        },
+                        {
+                            value: 'correct',
+                            label: 'correct'
+                        }
+                    ]
+                },
+            ],
+            unitTableData:[],
+            unitTableTestData:[],
+            form: {
+                data1: '',
+                data2: '',
+                data3: '',
+                data4: '',
+            },
+            unitTestData:{
+                    login:
+                        [
+                            {
+                                data:
+                                    {
+                                        userId: '',
+                                        password: '',
+                                        number:0,
+                                    },
+                                expectMessage: 'account not exists!',
+                            },
+                            {
+                                data:
+                                    {
+                                        userId: 1,
+                                        password: '123',
+                                        number:1,
+                                    },
+                                expectMessage: 'wrong password!',
+                            },
+                            {
+                                data:
+                                    {
+                                        userId: 1,
+                                        password: '123456',
+                                        number:2,
+                                    },
+                                expectMessage: 'login success!',
+                            },
+                            {
+                                data:
+                                    {
+                                        userId: 1,
+                                        password: '123',
+                                        number:3,
+                                    },
+                                expectMessage: 'wrong password!',
+                            },
+                            {
+                                data:
+                                    {
+                                        userId: 'abc',
+                                        password: '',
+                                        number:4,
+                                    },
+                                expectMessage: 'account not exists!',
+                            }
+
+                        ],
+                    unstarMusic:
+                        [
+                            {
+                                data:
+                                    {
+                                        userId: '-1',
+                                        musicId: '1',
+                                        number:0,
+                                    },
+                                expectMessage: 'account not exists!',
+                            },
+                            {
+                                data:
+                                    {
+                                        userId: '1',
+                                        musicId: 'qwe',
+                                        number:1,
+                                    },
+                                expectMessage: 'music not exists!',
+                            },
+                            {
+                                data:
+                                    {
+                                        userId: '1',
+                                        musicId: '2',
+                                        number:2,
+                                    },
+                                expectMessage: 'not stared!',
+                            },
+                            {
+                                data:
+                                    {
+                                        userId: '1',
+                                        musicId: '1',
+                                        number:3,
+                                    },
+                                expectMessage: 'success!',
+                            },
+                        ],
+                    sendMessage:
+                        [
+                            {
+                                data:
+                                    {
+                                        senderId: '1',
+                                        receiverId: '2',
+                                        content:'',
+                                        number:0,
+                                    },
+                                expectMessage: 'message is empty!',
+                            },
+                            {
+                                data:
+                                    {
+                                        senderId: '1',
+                                        receiverId: '2',
+                                        content:'hello',
+                                        number:1,
+                                    },
+                                expectMessage: 'success!',
+                            },
+                            {
+                                data:
+                                    {
+                                        senderId: '1',
+                                        receiverId: '2',
+                                        content:'hellohellohellohello',
+                                        number:2,
+                                    },
+                                expectMessage: 'message is too long!',
+                            },
+                            {
+                                data:
+                                    {
+                                        senderId: '1',
+                                        receiverId: '0',
+                                        content:'',
+                                        number:3,
+                                    },
+                                expectMessage: 'receiver not exists!',
+                            },
+                            {
+                                data:
+                                    {
+                                        senderId: '1',
+                                        receiverId: '-1',
+                                        content:'',
+                                        number:4,
+                                    },
+                                expectMessage: 'receiver not exists!',
+                            },
+                        ]
+
+                },
             // ECharts选项
             echartsOption: {	
                 title: {
@@ -828,7 +1123,7 @@
                 this.pLoading=true;
                 setTimeout(() => {
                     this.pLoading = false;
-                }, 2000);
+                }, 600);
             },
             showWelcome(){
                 this.welcomeShow=true;
@@ -866,13 +1161,216 @@
                     this.projectShow=true;
                     this.upShow=true;
                     this.ptShow=false;
-                }, 2000);
+                }, 1000);
             },
             //期末项目
             confirmProject(){
                 this.aboutVisible = false;
                 this.upShow=false;
                 this.ptShow=true;
+            },
+            //单元测试
+            showUnitReport(){
+                this.unitTestShow=false;
+                this.unitReport=true;
+            },
+            showUnitTest(){
+                this.unitTestShow=true;
+                this.unitReport=false;
+            },
+            refreshTestData() {
+                if(this.unitValue[0] === null || this.unitValue[1] === null) {
+                    this.$message.error('选择不全，请选择完全后再测试！')
+                    return
+                }
+                var testdata=this.unitTestData[this.unitValue[0]]
+                this.unitTableTestData.splice(0,this.unitTableTestData.length);
+                for(var i=0;i<testdata.length;i++)
+                {
+                    var t=''
+                    for(var key in testdata[i]['data'])
+                    {
+                        if(key!='number')
+                        {
+                            t=t+key+": "+testdata[i]['data'][key]+' \n '
+                        }
+                    }
+
+                    this.unitTableTestData.push(
+                        {
+                            id:"第"+i.toString()+"组",
+                            data:t,
+                            expect:testdata[i]['expectMessage']
+                        }
+                    )
+                }
+            },
+            startUnitTesting() {
+                console.log("ininin")
+                if(this.unitValue[0] === null || this.unitValue[1] === null) {
+                    this.$message.error('选择不全，请选择完全后再测试！')
+                    return
+                }
+                var url=this.URL
+                if(this.unitValue[1]=='bug')url=url+'bug/'+this.unitValue[0]
+                else url=url+this.unitValue[0]
+                console.log(url)
+                var testdata=this.unitTestData[this.unitValue[0]]
+                // console.log(testdata)
+                this.unitTableData.splice(0,this.unitTableData.length);
+
+                this.refreshTestData()
+
+                for(var i=0;i<testdata.length;i++)
+                {
+                    // console.log(testdata[i]['data'])
+                    axios.get(url, {params:testdata[i]['data']})
+                         .then((response) => {
+                            let res = JSON.parse(response.request.response)
+                            console.log(res['message'])
+                            // console.log(r)
+                            //console.log(ret1[i])
+                            // console.log(testdata[i]['message'])
+                            // this.tableData = res.list
+
+                            this.unitTableData.push(
+                                {
+                                    id:"第"+res['number']+"组",
+                                    real:res['message']
+                                }
+                            )
+                            //console.log(this.tableData)
+                            //this.tableData[i]['real']=res['message']
+                        })
+                        .catch(function (error) { // 请求失败处理
+                            console.log(error)
+                            this.unitTableData.push(
+                                {
+                                    id:"第?组",
+                                    real:'前后端数据匹配错误'
+                                }
+                            )
+                        });
+
+
+
+                    // this.tableData[i]['testdata']=testdata[i]['data']
+                    // this.tableData[i]['expect']=testdata[i]['message']
+                    //console.log(this.tableData)
+                }
+
+
+            },
+            countNum() {
+                console.log("###")
+                //console.log(this.tableData[0]['id'])
+                this.unitCorrectNum = 0
+                this.unitErrorNum = 0
+                const testdata = this.unitTableTestData;
+                for(let i=0; i< this.unitTableData.length; i++) {
+                    let cnt = 0;
+                    for(let j=0; j<testdata.length; j++)
+                    {
+                        if(this.unitTableData[i]['id']==testdata[j]['id']&&this.unitTableData[i]['real']==testdata[j]['expect'])
+                        {
+                            cnt=1
+                        }
+                    }
+                    this.unitCorrectNum+=cnt
+                    this.unitErrorNum+=(1-cnt)
+                }
+            },
+            drawChart() {
+                if(this.unitValue[0] === null || this.unitValue[1] === null) {
+                    this.$message.error('选择不全，请选择完全后再测试！')
+                    return
+                }
+                this.countNum()
+                console.log(this.unitCorrectNum)
+                console.log(this.unitErrorNum)
+                // 基于准备好的dom，初始化echarts实例
+                let myChart = echarts.init(document.getElementById('myUnitChart'))
+                // 绘制图表
+                let option = {
+                    title: {
+                        text: 'Unit Test Pie Chart',
+                        subtext: this.unitValue[0] + ' ' + this.unitValue[1],
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left',
+                    },
+                    series: [
+                        {
+                            color: ['#91cc75', '#ee6666'],
+                            name: 'Result Analysis',
+                            type: 'pie',
+                            radius: '50%',
+                            data: [
+                                {value: this.unitCorrectNum, name: 'Right'},
+                                {value: this.unitErrorNum, name: 'Wrong'},
+                            ],
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ]
+                };
+                myChart.setOption(option);
+            },
+            addForm(){
+                if(this.unitValue[0] === null || this.unitValue[1] === null) {
+                    this.$message.error('选择不全，请选择完全后再测试！')
+                    return
+                }
+                if(this.unitValue[0]=='sendMessage')
+                {
+                    this.unitTestData[this.unitValue[0]].push({
+                        data:
+                            {
+                                senderId: this.form.data1,
+                                receiverId: this.form.data2,
+                                content:this.form.data3,
+                                number:this.unitTestData[this.unitValue[0]].length,
+                            },
+                        expectMessage: this.form.data4,
+                    })
+                }
+                else if(this.unitValue[0]=='login')
+                {
+                    this.unitTestData[this.unitValue[0]].push({
+                        data:
+                            {
+                                userId: this.form.data1,
+                                password: this.form.data2,
+                                number:this.unitTestData[this.unitValue[0]].length,
+                            },
+                        expectMessage: this.form.data4,
+                    })
+                }
+                else
+                {
+                    this.unitTestData[this.unitValue[0]].push({
+                        data:
+                            {
+                                userId: this.form.data1,
+                                musicId: this.form.data2,
+                                number:this.unitTestData[this.unitValue[0]].length,
+                            },
+                        expectMessage: this.form.data4,
+                    })
+                }
+
+                this.unitAddShow = false;
+                this.refreshTestData()
             },
             mainToWelcome(){
                 //显隐切换
