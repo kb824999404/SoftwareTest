@@ -305,38 +305,38 @@
                         <el-table
                             style="width: 550px; margin: auto;"
                             ref="methodTable"
-                            height="180px"
+                            height="250px"
                             :data="classMethods"
                             highlight-current-row>
-                            <el-table-column
-                                property="method_name"
-                                label="Method Name"
-                                align="center"
-                                width="130px">
-                            </el-table-column>
-                            <el-table-column
-                                property="test_case"
-                                label="Test Case"
-                                align="center"
-                                width="170px">
-                            </el-table-column>
-                            <el-table-column
-                                label="Operation"
-                                align="center"
-                                width="250px">
-                                <template slot-scope="scope">
-                                    <el-button class="button2"
-                                        size="mini" round @click="onMethodSelected(scope.$index, scope.row)">
-                                        Upload</el-button>
-                                    <el-button class="button1"
-                                        size="mini" round @click="onMethodTest(scope.$index,scope.row)">
-                                        Test</el-button>
-                                    <el-button class="button2"
-                                        size="mini" round @click="onTestCaseDelete(scope.$index, scope.row)">
-                                        Delete</el-button>
-                                </template>
-                            </el-table-column>
-                        </el-table>
+                        <el-table-column
+                            property="method_name"
+                            label="Method Name"
+                            align="center"
+                            width="130px">
+                        </el-table-column>
+                        <el-table-column
+                            property="test_case"
+                            label="Test Case"
+                            align="center"
+                            width="170px">
+                        </el-table-column>
+                        <el-table-column
+                            label="Operation"
+                            align="center"
+                            width="250px">
+                            <template slot-scope="scope">
+                                <el-button class="button2"
+                                    size="mini" round @click="onMethodSelected(scope.$index, scope.row)">
+                                    Upload</el-button>
+                                <el-button class="button1"
+                                    size="mini" round @click="onMethodTest(scope.$index,scope.row)">
+                                    Test</el-button>
+                                <el-button class="button2"
+                                    size="mini" round @click="onTestCaseDelete(scope.$index, scope.row)">
+                                    Delete</el-button>
+                            </template>
+                    </el-table-column>
+                    </el-table>
                     <el-dialog title="Upload Test Case" :visible.sync="dialogTestCaseVisible">
                         <el-upload
                                 class="upload-demo"
@@ -385,7 +385,7 @@
                             <template>
                                 <el-table
                                         :data="tableData"
-                                        style="width: 90%;margin:auto;margin-top:30px;"
+                                        style="width: 90%;margin: auto;margin-top: 30px;"
                                         height="46vh"
                                         :row-class-name="tableRowClassName">
                                     <el-table-column
