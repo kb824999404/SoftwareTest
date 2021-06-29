@@ -4,7 +4,7 @@ public class TriangleJudger{
     private static boolean comp(double a,double b){
         return Math.abs(a-b)<1e-6;
     }
-    public static String judgeTriangle(double a,double b,double c){
+    public static String judgeTriangleW(double a,double b,double c){
         double temp;
         //给a,b,c从小到大排序
         if(a>b){

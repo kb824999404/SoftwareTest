@@ -115,7 +115,6 @@
             <el-main style="height: 92vh">
                 <el-row style="margin-top:8vh;margin-left:8vw;margin-right: 15vw">
                     <el-col :span="10">
-                        <!--todo：图片样式待改-->
                         <el-image
                                 style="margin-top:-2vh;width: 500px;height: 500px"
                                 :src="helloUrl"
@@ -534,7 +533,24 @@
         </div>
         <!--期末项目页-->
         <div id="projectTest" v-show="projectShow">
-            <el-tabs type="border-card" style="margin-top: 2vh">
+            <!--上传/选择测试项目-->
+            <el-card class="box-card" style="height: 60vh; width:60vw; margin-left:20vw;margin-top: 15vh" v-show="upShow">
+                <el-row>
+                    <el-col :span="14">
+                        <el-button @click="tip()" round style="width: 100%;height: 150px;font-size: 40px;margin-top: 15px">Upload<br/>New<br/>Project</el-button>
+                        <el-button @click="about()" round style="width: 100%;height: 150px;font-size: 40px;margin-left: 0px;margin-top: 40px">Use<br/>History<br/>Project</el-button>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-image
+                                style="margin-top:-2vh;width: 450px;height: 450px"
+                                :src="dogUrl"
+                        >
+                        </el-image>
+                    </el-col>
+                </el-row>
+            </el-card>
+            <!--测试内容-->
+            <el-tabs type="border-card" style="margin-top: 2vh" v-show="ptShow">
                 <el-tab-pane label="单元测试">
                     单元测试
                 </el-tab-pane>
@@ -547,34 +563,84 @@
             </el-tabs>
         </div>
     </el-container>
+    <!--上传测试项目-->
     <el-dialog
-            title="Guide"
+            title="Upload New Project To Test"
             :visible.sync="tipVisible"
             width="30%"
             center>
-        <div>
-            <el-steps direction="vertical" :active="stepActive">
-                <el-step title="Step1" description="设置本次测试的基本信息"></el-step>
-                <el-step title="Step2" description="上传需要测试的类（可以同时上传多个）"></el-step>
-                <el-step title="Step3" description="选择需要测试的类和对应方法"></el-step>
-                <el-step title="Step4" description="表格展示测试结果"></el-step>
-                <el-step title="Step5" description="图形化展示测试结果"></el-step>
-            </el-steps>
+        <div style="text-align: center;">
+            <el-upload
+                    class="upload-demo"
+                    drag
+                    multiple>
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                <div class="el-upload__tip" slot="tip">只能上传Java/Python项目，且不超过60M</div>
+            </el-upload>
         </div>
         <span slot="footer" class="dialog-footer">
             <el-button class="button1" @click="tipVisible = false">确 定</el-button>
         </span>
     </el-dialog>
+    <!--选择历史项目-->
     <el-dialog
-            title="About us"
+            title="Choose one uploaded project"
             :visible.sync="aboutVisible"
-            width="30%"
+            width="50%"
             center>
-        <span>我们是TJU18级软件工程专业的学生，如果对本网站有何建议或问题请随时联系：tjuxxxx@tj.com</span>
+        <div>
+            <el-table
+                    ref="singleTable"
+                    :data="projectData"
+                    highlight-current-row
+                    @current-change="handleCurrentChange"
+                    style="width: 100%">
+                <el-table-column
+                        type="index"
+                        width="50">
+                </el-table-column>
+                <el-table-column
+                        property="projectTime"
+                        label="projectUploadTime"
+                        width="120">
+                </el-table-column>
+                <el-table-column
+                        property="projectName"
+                        label="projectName"
+                        width="120">
+                </el-table-column>
+                <el-table-column
+                        property="projectType"
+                        label="projectType">
+                </el-table-column>
+                <el-table-column label="operation">
+                    <template slot-scope="scope">
+                        <el-button
+                                size="mini"
+                                type="danger"
+                                @click="dlPVisible = true">delete</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </div>
         <span slot="footer" class="dialog-footer">
-            <el-button class="button1" @click="aboutVisible = false">确 定</el-button>
+            <el-button class="button1" @click="confirmProject()">confirm</el-button>
         </span>
     </el-dialog>
+    <!--询问是否删除项目-->
+    <el-dialog
+            title="Warning!"
+            :visible.sync="dlPVisible"
+            width="30%"
+            :before-close="handleClose">
+        <span>Sure to delete this project?</span>
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="dlPVisible = false">cancel</el-button>
+    <el-button type="primary" @click="dlPVisible = false">confirm</el-button>
+  </span>
+    </el-dialog>
+
 </div>
 
 <script>
@@ -593,6 +659,7 @@
             formUrl:"./assets/img/svg/Settings.svg",
             uploadUrl:"./assets/img/svg/Search.svg",
             resUrl:"./assets/img/svg/Deadline.svg",
+            dogUrl:"./assets/img/svg/dog.svg",
             achiveUrl:"./assets/img/svg/Achievement.svg",
             hwDetailUrl:"",
             //步骤条切换
@@ -603,6 +670,7 @@
             javaClassShow:false,
             homeworkIsShow:false,
             projectShow:false,
+            dlPVisible:false,
             isShow1:false,
             isShow2:false,
             isShow3:false,
@@ -610,6 +678,8 @@
             isShow5:false,
             tipVisible:false,
             aboutVisible:false,
+            ptShow:false,
+            upShow:false,
             //测试信息
             testName:"",
             testLocation:"",
@@ -695,6 +765,12 @@
                 {value: 0, name: 'False'},
                 {value: 0, name: 'True'},
             ],
+            //项目表格
+            projectData:[{
+                projectTime: '2021/06/11',
+                projectName: 'iMusic',
+                projectType: 'Java/Spring Boot'
+            }],
             // ECharts选项
             echartsOption: {	
                 title: {
@@ -770,6 +846,14 @@
                 this.javaClassShow=false;
                 this.homeworkIsShow=false;
                 this.projectShow=true;
+                this.upShow=true;
+                this.ptShow=false;
+            },
+            //期末项目
+            confirmProject(){
+                this.aboutVisible = false;
+                this.upShow=false;
+                this.ptShow=true;
             },
             mainToWelcome(){
                 //显隐切换

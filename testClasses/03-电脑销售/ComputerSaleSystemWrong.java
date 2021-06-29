@@ -1,4 +1,4 @@
-public class ComputerSaleSystem
+public class ComputerSaleSystemW
 {
     private int hostNum;
     private int screenNum;
