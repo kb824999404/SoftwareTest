@@ -551,7 +551,7 @@
             </el-card>
             <!--测试内容-->
             <el-tabs type="border-card" style="margin-top: 2vh" v-show="ptShow">
-                <el-tab-pane label="单元测试" >
+                <el-tab-pane label="UnitTest" >
                     <div style="text-align: center" v-show="unitTestShow">
                         <el-cascader
                                 v-model="unitValue"
@@ -568,22 +568,21 @@
                                 ref="table"
                                 :data="unitTableTestData"
                                 stripe
-                                style="width: 100%;
-              }"
+                                style="width: 100%;"
                                 border>
                             <el-table-column
                                     prop="id"
-                                    label="测试用例编号"
+                                    label="TestcaseID"
                                     show-overflow-tooltip>
                             </el-table-column>
                             <el-table-column
                                     prop="data"
-                                    label="测试用例"
+                                    label="TestData"
                                     show-overflow-tooltip>
                             </el-table-column>
                             <el-table-column
                                     prop="expect"
-                                    label="期望结果"
+                                    label="ExpectedResult"
                                     show-overflow-tooltip>
                             </el-table-column>
                         </el-table>
@@ -595,12 +594,12 @@
                                 border>
                             <el-table-column
                                     prop="id"
-                                    label="测试用例编号"
+                                    label="TestcaseID"
                                     show-overflow-tooltip>
                             </el-table-column>
                             <el-table-column
                                     prop="real"
-                                    label="测试结果"
+                                    label="TestResult"
                                     show-overflow-tooltip>
                             </el-table-column>
                         </el-table>
@@ -619,11 +618,94 @@
                         </el-image>
                     </div>
                 </el-tab-pane>
-                <el-tab-pane label="集成测试">
-                    集成测试
+                <el-tab-pane label="IntegrationTest">
+                    <div style="text-align: center" v-show="integrationTestShow">
+                        <el-button style="margin-left: 20px" type="primary" @click="startIntegrationTest()">Start IntegrationTest</el-button>
+                        <el-button round @click="showIntegrationReport()">Show Report</el-button>
+                        <div style="height: 20px"></div>
+                        <el-table
+                                ref="table"
+                                :data="integrationTableData"
+                                stripe
+                                style="width: 100%"
+                                border>
+                            <el-table-column
+                                    prop="testingID"
+                                    label="TestID"
+                                    show-overflow-tooltip>
+                            </el-table-column>
+                            <el-table-column
+                                    prop="interfaceName"
+                                    label="InterfaceName"
+                                    show-overflow-tooltip>
+                            </el-table-column>
+                            <el-table-column
+                                    prop="testingDescription"
+                                    label="TestDescription"
+                                    show-overflow-tooltip>
+                            </el-table-column>
+                            <el-table-column
+                                    prop="testCaseID"
+                                    label="TestcaseID"
+                                    show-overflow-tooltip>
+                            </el-table-column>
+                            <el-table-column
+                                    prop="input"
+                                    label="Input"
+                                    show-overflow-tooltip>
+                            </el-table-column>
+                            <el-table-column
+                                    prop="expectedOutput"
+                                    label="ExpectedOutput"
+                                    show-overflow-tooltip>
+                            </el-table-column>
+                            <el-table-column
+                                    prop="actualOutput"
+                                    label="ActualOutput"
+                                    show-overflow-tooltip>
+                            </el-table-column>
+                            <el-table-column
+                                    prop="correctness"
+                                    label="Correctness"
+                                    show-overflow-tooltip>
+                            </el-table-column>
+                            <el-table-column
+                                    prop="testTime"
+                                    label="TestTime"
+                                    show-overflow-tooltip>
+                            </el-table-column>
+                        </el-table>
+
+                        <div style="height: 20px"></div>
+                        <div id="inteChart" style="width: 360px;height: 360px;margin: auto"></div>
+
+                    </div>
+                    <div v-show="integrationReport">
+                        <el-row>
+                            <el-button round @click="showIntegrationTest()">To IntegrationTest</el-button>
+                        </el-row>
+                        <el-image
+                                :src="integrationUrl"
+                        >
+                        </el-image>
+                    </div>
                 </el-tab-pane>
-                <el-tab-pane label="系统测试">
+                <el-tab-pane label="SystemTest">
                     系统测试
+                </el-tab-pane>
+                <el-tab-pane label="Performance Test">
+                    <el-row>
+                        <el-col :span="12">
+                            <el-image
+                                    :src="performancePlan"
+                            ></el-image>
+                        </el-col>
+                        <el-col :span="12">
+                            <el-image
+                                    :src="performanceReport"
+                            ></el-image>
+                        </el-col>
+                    </el-row>
                 </el-tab-pane>
             </el-tabs>
         </div>
@@ -752,6 +834,9 @@
             projectUrl:"./assets/img/projectTest.png",
             welcomeUrl:"./assets/img/welcomeTest.png",
             unitTestUrl:"./assets/img/test/unitTest.png",
+            integrationUrl:"./assets/img/test/integrationTest.png",
+            performancePlan:"./assets/img/test/performancePlan.png",
+            performanceReport:"./assets/img/test/performanceReport.png",
             formUrl:"./assets/img/svg/Settings.svg",
             uploadUrl:"./assets/img/svg/Search.svg",
             resUrl:"./assets/img/svg/Deadline.svg",
@@ -1072,6 +1157,10 @@
                         ]
 
                 },
+            //集成测试
+            integrationTestShow:true,
+            integrationReport:false,
+            integrationTableData:[],
             // ECharts选项
             echartsOption: {	
                 title: {
@@ -1169,6 +1258,18 @@
                 this.upShow=false;
                 this.ptShow=true;
             },
+            //集成测试
+            showIntegrationTest(){
+                this.integrationTestShow=true;
+                this.integrationReport=false;
+            },
+            showIntegrationReport(){
+                this.integrationTestShow=false;
+                this.integrationReport=true;
+            },
+            startIntegrationTest(){
+
+            },
             //单元测试
             showUnitReport(){
                 this.unitTestShow=false;
@@ -1251,8 +1352,6 @@
                                 }
                             )
                         });
-
-
 
                     // this.tableData[i]['testdata']=testdata[i]['data']
                     // this.tableData[i]['expect']=testdata[i]['message']
