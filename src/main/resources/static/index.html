@@ -623,27 +623,27 @@
                         <el-button style="margin-left: 20px" type="primary" @click="startIntegrationTest()">Start IntegrationTest</el-button>
                         <el-button round @click="showIntegrationReport()">Show Report</el-button>
                         <div style="height: 20px"></div>
-                        <el-table
+                        <el-table v-loading="integrationLoading"
                                 ref="table"
                                 :data="integrationTableData"
                                 stripe
                                 style="width: 100%"
                                 border>
-                            <el-table-column
+                            <!-- <el-table-column
                                     prop="testingID"
                                     label="TestID"
                                     show-overflow-tooltip>
-                            </el-table-column>
-                            <el-table-column
+                            </el-table-column> -->
+                            <!-- <el-table-column
                                     prop="interfaceName"
                                     label="InterfaceName"
                                     show-overflow-tooltip>
-                            </el-table-column>
-                            <el-table-column
+                            </el-table-column> -->
+                            <!-- <el-table-column
                                     prop="testingDescription"
                                     label="TestDescription"
                                     show-overflow-tooltip>
-                            </el-table-column>
+                            </el-table-column> -->
                             <el-table-column
                                     prop="testCaseID"
                                     label="TestcaseID"
@@ -669,11 +669,11 @@
                                     label="Correctness"
                                     show-overflow-tooltip>
                             </el-table-column>
-                            <el-table-column
+                            <!-- <el-table-column
                                     prop="testTime"
                                     label="TestTime"
                                     show-overflow-tooltip>
-                            </el-table-column>
+                            </el-table-column> -->
                         </el-table>
 
                         <div style="height: 20px"></div>
@@ -863,6 +863,7 @@
             aboutVisible:false,
             ptShow:false,
             upShow:false,
+            integrationLoading:false,
             //测试信息
             testName:"",
             testLocation:"",
@@ -1161,6 +1162,19 @@
             integrationTestShow:true,
             integrationReport:false,
             integrationTableData:[],
+            integrationTableDataTmp:[
+            {'testCaseID': 'IT_TD_001_001_001', 'input': '{userId: 1, description:””, styleId:1 , instrumentId：1，sceneId: 1，length：1 }', 'expectedOutput': '{“status”:”false”,“message”:”任务描述不能为空！”}', 'actualOutput': '{“status”:”false”,“message”:”任务描述不能为空！”}', 'correctness': '正确'},
+{'testCaseID': 'IT_TD_001_001_002', 'input': '{userName: ”Ian”,“userPassword”:””}', 'expectedOutput': '{“status”:”true”,“message”:”密码不能为空！”}', 'actualOutput': '{“status”:”false”,“message”:”任务描述不能为空！”}', 'correctness': '正确'},
+{'testCaseID': 'IT_TD_001_002_001', 'input': '{userName: ”Ian”,“userPassword”:”123”}', 'expectedOutput': '{“status”:”false”,“message”:”密码长度不能小于6！”}', 'actualOutput': '{“status”:”false”,“message”:”密码长度不能小于6！”}', 'correctness': '正确'},
+{'testCaseID': 'IT_TD_001_003_001', 'input': '{userName: ””,“userPassword”:”123456”}', 'expectedOutput': '{“status”:”false”,“message”:”用户名不能为空！”}', 'actualOutput': '{“status”:”false”,“message”:”用户名不能为空！”}', 'correctness': '正确'},
+{'testCaseID': 'IT_TD_001_003_002', 'input': '{userName: ”Ian”,“userPassword”:”123456”}', 'expectedOutput': '{“status”:”true”,“userID”:userID }', 'actualOutput': '{“status”:”true”,“userID”:userID }', 'correctness': '正确'},
+{'testCaseID': 'IT_TD_002_001_001', 'input': '{userId: 1, description:””, styleId:1 , instrumentId：1，sceneId: 1，length：1 }', 'expectedOutput': '{“status”:”false”,“message”:”任务描述不能为空！”}', 'actualOutput': '{“status”:”false”,“message”:”任务描述不能为空！”}', 'correctness': '正确'},
+{'testCaseID': 'IT_TD_002_002_001', 'input': '{userId: -1, description:”求一首好听的吉它曲！”, styleId:1 , instrumentId：1，sceneId: 1，length：1 }', 'expectedOutput': '{“status”:”false”,“message”:”userId不合法！”}', 'actualOutput': '{“status”:”true”,“message”:”发布任务成功！”}', 'correctness': '错误'},
+{'testCaseID': 'IT_TD_002_002_002', 'input': '{userId: 1000, description:”求一首好听的吉它曲！”, styleId:1 , instrumentId：1，sceneId: 1，length：1 }', 'expectedOutput': '{“status”:”false”,“message”:”用户不存在！”}', 'actualOutput': '{“status”:”false”,“message”:”用户不存在！”}', 'correctness': '正确'},
+{'testCaseID': 'IT_TD_002_003_001', 'input': '{userId: 1, description:”求一首好听的吉它曲！”, styleId:1 , instrumentId：1，sceneId: 1，length：-1 }', 'expectedOutput': '{“status”:”false”,“message”:”length不合法！”}', 'actualOutput': '{“status”:”false”,“message”:”length不合法！”}', 'correctness': '正确'},
+{'testCaseID': 'IT_TD_002_003_002', 'input': '{userId: 1, description:”求一首好听的吉它曲！”, styleId:1 , instrumentId：1，sceneId: 1，length：0 }', 'expectedOutput': '{“status”:”false”,“message”:”音乐长度不能为0！”}', 'actualOutput': '{“status”:”true”,“message”:”发布任务成功！”}', 'correctness': '错误'},
+{'testCaseID': 'IT_TD_002_004_001', 'input': '{userId: 1, description:”求一首好听的吉它曲！”, styleId:1 , instrumentId：1，sceneId: 1，length：30 }', 'expectedOutput': '{“status”:”true”,“message”:”发布任务成功！”}', 'actualOutput': '{“status”:”true”,“message”:”发布任务成功！”}', 'correctness': '正确'},
+        ],
             // ECharts选项
             echartsOption: {	
                 title: {
@@ -1266,9 +1280,15 @@
             showIntegrationReport(){
                 this.integrationTestShow=false;
                 this.integrationReport=true;
+               
             },
             startIntegrationTest(){
-
+                this.integrationLoading = true;
+                console.log('startIntegrationTest');
+                setInterval(()=>{
+                    this.integrationTableData  = this.integrationTableDataTmp;
+                    this.integrationLoading = false;
+                },3000);
             },
             //单元测试
             showUnitReport(){
