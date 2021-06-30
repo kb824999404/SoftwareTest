@@ -691,7 +691,10 @@
                     </div>
                 </el-tab-pane>
                 <el-tab-pane label="SystemTest">
-                    系统测试
+                    <el-image
+                    :src="systemReport"
+                    >
+                    </el-image>
                 </el-tab-pane>
                 <el-tab-pane label="Performance Test">
                     <el-row>
@@ -837,6 +840,7 @@
             integrationUrl:"./assets/img/test/integrationTest.png",
             performancePlan:"./assets/img/test/performancePlan.png",
             performanceReport:"./assets/img/test/performanceReport.png",
+            systemReport:"./assets/img/test/systemTest.png",
             formUrl:"./assets/img/svg/Settings.svg",
             uploadUrl:"./assets/img/svg/Search.svg",
             resUrl:"./assets/img/svg/Deadline.svg",
